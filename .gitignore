@@ -170,4 +170,10 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-data/df_prepared_features.csv
+data/X_test.parquet
+data/X_train.parquet
+data/X_val.parquet
+data/y_test.csv
+data/y_train.csv
+data/y_val.csv
+mlflow.db
