@@ -170,6 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Ignore files
 data/X_test.parquet
 data/X_train.parquet
 data/X_val.parquet
