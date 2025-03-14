@@ -171,6 +171,7 @@ cython_debug/
 .pypirc
 
 # Ignore files
+data/Dataset_cleaned.csv
 data/X_test.parquet
 data/X_train.parquet
 data/X_val.parquet
