@@ -1,6 +1,10 @@
+import seaborn as sns
 import pandas as pd
 import string
 import re
+
+import boto3
+import io
 
 import spacy
 import nltk
@@ -8,12 +12,20 @@ import nltk
 from tqdm import tqdm
 from nltk.corpus import stopwords
 
+from textblob import TextBlob
 from langdetect import detect, DetectorFactory
+
+from sklearn.metrics import classification_report, confusion_matrix
 
 nlp = spacy.load("en_core_web_sm")
 nltk.download('stopwords')
 stopWords = stopwords.words('english')
 punctuations = string.punctuation
+
+# Function for calculation sentiment scores
+def get_sentiment(text):
+    analysis = TextBlob(str(text))
+    return analysis.sentiment.polarity
 
 # Function for data cleaning
 def clean_data(features, target):
@@ -148,7 +160,48 @@ def remove_outliers(features, target, num_cols, threshold=3, iterations=1):
     return features_sampled, target
 
 
+def test_feature_sets(model, feature_sets, y_train, validation_sets, y_test):
+    for name, feature_set in feature_sets.items():
+        model = model
+        model.fit(feature_set, y_train)
+        y_pred = model.predict(validation_sets[name])
+        print(f'classification report for feature set: {name}')
+        print(classification_report(y_test, y_pred, digits=3, target_names=["Real", "Fake"]))
+
 def evaluate(y_test, y_pred):
-    print(classification_report(y_test, y_pred, target_names=["Real", "Fake"]))
+    print(classification_report(y_test, y_pred, digits=3, target_names=["Real", "Fake"]))
     cm = confusion_matrix(y_test, y_pred)
     sns.heatmap(cm, annot=True, fmt='d')
+
+
+def load_file_s3(s3_bucket, OBJECT_NAME, type):
+    s3 = boto3.client('s3')
+
+    if type == 'csv':
+        buffer = io.BytesIO()
+        s3.download_fileobj(s3_bucket, OBJECT_NAME, buffer)
+        buffer.seek(0)
+        data = pd.read_csv(buffer)  # Oder df = pd.read_parquet(buffer) für Parquet
+        return data
+    else:
+        buffer = io.BytesIO()
+        s3.download_fileobj(s3_bucket, OBJECT_NAME, buffer)
+        buffer.seek(0)
+        data = pd.read_parquet(buffer)  # Oder df = pd.read_parquet(buffer) für Parquet
+        return data
+
+def upload_to_s3(file, bucket_name, file_key):
+    s3_client = boto3.client('s3')
+
+    if isinstance(file, pd.Series):
+        buffer = io.BytesIO()
+        file.to_csv(buffer, index=False)
+        buffer.seek(0)
+    else:
+        buffer = io.BytesIO()
+        file.to_parquet(buffer, index=False)
+        buffer.seek(0)
+
+    s3_client.put_object(Bucket=bucket_name, Key=file_key, Body=buffer.getvalue())
+    print(f"File saved as {file_key} in {bucket_name}.")
+
