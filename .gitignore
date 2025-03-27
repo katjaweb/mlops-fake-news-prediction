@@ -179,3 +179,4 @@ data/y_test.csv
 data/y_train.csv
 data/y_val.csv
 mlflow.db
+notes.md
