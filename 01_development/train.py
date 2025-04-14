@@ -200,7 +200,7 @@ def register_model(current_metric, new_metric, model_name, best_run_id):
     try:
         current_prod_model = client.get_model_version_by_alias(model_name, "Production")
         current_version = current_prod_model.version
-        current_metric = float(current_prod_model.description or -1)  # Optional: aus Tag holen
+        current_metric = float(current_prod_model.description or -1)
     except Exception:
         current_prod_model = None
         current_version = None
@@ -234,7 +234,7 @@ def register_model(current_metric, new_metric, model_name, best_run_id):
         )
         client.set_registered_model_alias(model_name, alias="Production", version=result.version)
 
-        # Metrik als Beschreibung oder Tag speichern (optional)
+        # Save metric as description
         client.update_model_version(
             name=model_name,
             version=result.version,

@@ -3,5 +3,8 @@
 disable = [
     "line-too-long",
     "broad-exception-caught",
-    "bare-except"
+    "bare-except",
+    "too-many-arguments",
+    "too-many-positional-arguments",
+    "too-many-locals"
 ]

@@ -99,7 +99,7 @@ def load_file_s3(s3_bucket, dataset_path, file_type):
 
     if file_type == 'csv':
         return pd.read_csv(buffer)
-    
+
     return pd.read_parquet(buffer)
 
 def upload_to_s3(file, s3_bucket, dataset):
