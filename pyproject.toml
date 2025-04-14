@@ -1,0 +1,7 @@
+[tool.pylint.messages_control]
+
+disable = [
+    "line-too-long",
+    "broad-exception-caught",
+    "bare-except"
+]
