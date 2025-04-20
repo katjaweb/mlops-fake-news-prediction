@@ -8,13 +8,14 @@ import sys
 
 from sklearn.model_selection import train_test_split
 
-here = os.path.dirname(__file__)
-sys.path.append(os.path.join(here, '..'))
 from utils import preprocessing as prep
 from utils import utility_functions as uf
 
+here = os.path.dirname(__file__)
+sys.path.append(os.path.join(here, '..'))
+
 s3_bucket = os.getenv('S3_BUCKET', 'fake-news-prediction')
-dataset_path = os.getenv("DATASET_PATH", 'datasets/WELFake_Dataset.csv') # raw dataset
+dataset_path = os.getenv('DATASET_PATH', 'datasets/WELFake_Dataset.csv')  # raw dataset
 
 
 # Load raw dataset
@@ -39,15 +40,19 @@ print('perform tain-, val-, test-split')
 X = df.drop(columns='label')
 y = df.loc[:, 'label']
 
-X_train, X_test, y_train, y_test = train_test_split(X,
-                                                    y,
-                                                    test_size=0.2,
-                                                    random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+)
 
-X_train, X_val, y_train, y_val = train_test_split(X_train, 
-                                                    y_train, 
-                                                    test_size=0.25,
-                                                    random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train,
+    y_train,
+    test_size=0.25,
+    random_state=42,
+)
 
 print('tain-, val-, test-split done')
 
@@ -90,11 +95,11 @@ print('text cleaner applied')
 # Upload features and target to s3
 
 print('upload features to s3')
-uf.upload_to_s3(X_train, s3_bucket, "X_train")
-uf.upload_to_s3(X_val, s3_bucket, "X_val")
-uf.upload_to_s3(X_test, s3_bucket, "X_test")
+uf.upload_to_s3(X_train, s3_bucket, 'X_train')
+uf.upload_to_s3(X_val, s3_bucket, 'X_val')
+uf.upload_to_s3(X_test, s3_bucket, 'X_test')
 
 print('upload target to s3')
-uf.upload_to_s3(y_train, s3_bucket, "y_train")
-uf.upload_to_s3(y_val, s3_bucket, "y_val")
-uf.upload_to_s3(y_test, s3_bucket, "y_test")
+uf.upload_to_s3(y_train, s3_bucket, 'y_train')
+uf.upload_to_s3(y_val, s3_bucket, 'y_val')
+uf.upload_to_s3(y_test, s3_bucket, 'y_test')

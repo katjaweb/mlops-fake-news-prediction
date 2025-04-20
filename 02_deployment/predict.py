@@ -4,34 +4,30 @@ Predicts whether news are fake or real, its probability and actual run id.
 
 import os
 import sys
+
+import yaml
 import mlflow
 import pandas as pd
+from flask import Flask, jsonify, request
 
-from flask import Flask, request, jsonify
-from utils.preprocessing import prepare_features, apply_text_cleaner
 sys.path.append(os.path.abspath('..'))
+from utils.preprocessing import prepare_features, apply_text_cleaner
 
-# from mlflow.tracking import MlflowClient
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(current_dir, '..', 'config', 'vars.yaml')
 
-# tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000/")
-# mlflow.set_tracking_uri(tracking_uri)
+with open(config_path, "r", encoding='utf-8') as file:
+    config = yaml.safe_load(file)
 
-# client = MlflowClient()
-# model_name = "fake-news-model"
-# version = client.get_model_version_by_alias(name=model_name, alias="Production")
-# RUN_ID = version.run_id
+production_run_id = config['mlflow']['production_run_id']
+model_bucket = config['mlflow']['model_bucket']
+experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '4')
 
-# logged_model = f'runs:/{RUN_ID}/models'
-# model = mlflow.pyfunc.load_model(logged_model)
+MODEL_LOCATION = (
+    f's3://{model_bucket}/{experiment_id}/{production_run_id}/artifacts/models'
+)
+model = mlflow.sklearn.load_model(MODEL_LOCATION)
 
-model_bucket = os.getenv("MODEL_BUCKET", "fake-news-prediction")
-experiment_id = os.getenv("MLFLOW_EXPERIMENT_ID", "4")
-run_id = os.getenv("RUN_ID", "93fed103d82644b5b12f0805bc0e7547")
-
-model_location = f"s3://{model_bucket}/{experiment_id}/{run_id}/artifacts/models"
-
-
-model = mlflow.sklearn.load_model(model_location)
 
 def feature_prep(news):
     """
@@ -41,6 +37,7 @@ def feature_prep(news):
     features = prepare_features(features)
     features = apply_text_cleaner(features, column='title_text')
     return features
+
 
 def predict(features):
     """
@@ -80,7 +77,7 @@ def predict_endpoint():
     try:
 
         news = request.get_json()
-        
+
         features = feature_prep(news)
         pred, proba = predict(features)
 
@@ -88,7 +85,7 @@ def predict_endpoint():
             'label': pred,
             'probability being fake': round(float(proba[0][1]), 3),
             'probability being real': round(float(proba[0][0]), 3),
-            'model_version': run_id
+            'model_version': production_run_id,
         }
 
         return jsonify(result)
@@ -97,4 +94,4 @@ def predict_endpoint():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host = '0.0.0.0', port=9696)
+    app.run(debug=True, host='0.0.0.0', port=9696)
