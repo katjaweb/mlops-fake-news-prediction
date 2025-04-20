@@ -4,8 +4,34 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+boto3 = "*"
+cffi = "==1.17.1"
+cloudpickle = "==3.1.1"
+defusedxml = "==0.7.1"
+evidently = "==0.4"
+flask = "*"
+gunicorn = "*"
+langdetect = "*"
+lightgbm = "==4.6.0"
+matplotlib = "==3.9.3"
+mlflow = "==2.21.0"
+nltk = "*"
+numpy = "==1.26.4"
+pandas = "==2.2.3"
+prefect = "*"
+psutil = "==7.0.0"
+psycopg = "*"
+psycopg_binary = "*"
+pyarrow = "==19.0.1"
+requests = "*"
+scikit-learn = "==1.6.0"
+scipy = "==1.15.2"
+spacy = "*"
+textblob = "*"
+tqdm = "*"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.12"
