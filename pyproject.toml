@@ -14,7 +14,3 @@ disable = [
 line-length = 88
 target-version = ['py312']
 skip-string-normalization = true
-
-[tool.isort]
-multi_line_output = 3
-length_sort = true

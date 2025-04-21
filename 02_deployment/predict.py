@@ -2,6 +2,7 @@
 Predicts whether news are fake or real, its probability and actual run id.
 """
 
+# Test
 import os
 import sys
 
@@ -10,7 +11,10 @@ import mlflow
 import pandas as pd
 from flask import Flask, jsonify, request
 
-sys.path.append(os.path.abspath('..'))
+here = os.path.dirname(__file__)
+
+sys.path.append(os.path.join(here, '..'))
+
 from utils.preprocessing import prepare_features, apply_text_cleaner
 
 current_dir = os.path.dirname(os.path.abspath(__file__))

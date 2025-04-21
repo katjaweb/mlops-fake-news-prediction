@@ -17,9 +17,10 @@ repos:
   hooks:
   - id: pylint
     name: pylint
-    entry: pylint
+    entry: bash -c 'PYTHONPATH=. pylint "$@"'
     language: system
     types: [python]
+    pass_filenames: true
     require_serial: true
     args: [
       "-rn", # Only display messages
