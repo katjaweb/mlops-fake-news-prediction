@@ -1,6 +1,7 @@
 """
 integration test for web-service and docker
 """
+
 import requests
 from deepdiff import DeepDiff
 
@@ -15,7 +16,12 @@ news = {
 URL = 'http://localhost:9696/predict'
 actual_response = requests.post(URL, json=news, timeout=10).json()
 
-expected_response = {"label":"real news","model_version":"2b20e3e8444e4d3b8023a4a6c0112117","probability being fake":0.059,"probability being real":0.941}
+expected_response = {
+    "label": "real news",
+    "model_version": "2ff08b357a98410992dca762b2133023",
+    "probability being fake": 0.059,
+    "probability being real": 0.941,
+}
 
 # print('Status code:', actual_response.status_code)
 print('actual response:', actual_response)

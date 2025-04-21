@@ -1,6 +1,7 @@
 mlflow:
   best_model_name: null
-  experiment_name: mlflow-fake-news-test-3
+  experiment_name: mlflow-fake-news
   model_bucket: fake-news-prediction
-  production_run_id: 2b20e3e8444e4d3b8023a4a6c0112117
+  production_run_id: 2ff08b357a98410992dca762b2133023
+  experiment_id: 1
   tracking_uri: null

@@ -21,13 +21,9 @@ from hyperopt import STATUS_OK, Trials, hp, tpe, fmin
 from hyperopt.pyll.base import scope
 from sklearn.svm import LinearSVC
 from sklearn.compose import ColumnTransformer
+
 # from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import (
-    f1_score,
-    recall_score,
-    accuracy_score,
-    precision_score
-)
+from sklearn.metrics import f1_score, recall_score, accuracy_score, precision_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
@@ -51,6 +47,7 @@ mlflow.set_experiment(EXPERIMENT_NAME)
 
 client = MlflowClient(tracking_uri=MLFLOW_TRACKING_URI)
 experiment_id = mlflow.get_experiment_by_name(EXPERIMENT_NAME).experiment_id
+config['mlflow']['experiment_id'] = experiment_id
 model_bucket = config['mlflow']['model_bucket']
 
 

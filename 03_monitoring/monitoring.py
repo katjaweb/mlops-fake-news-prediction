@@ -20,7 +20,7 @@ from evidently.report import Report
 from evidently.metrics import (
     ColumnDriftMetric,
     DatasetDriftMetric,
-    DatasetMissingValuesMetric
+    DatasetMissingValuesMetric,
 )
 from evidently.metric_preset import ClassificationPreset
 
@@ -37,7 +37,7 @@ model_bucket = config['mlflow']['model_bucket']
 experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '4')
 run_id = config['mlflow']['production_run_id']
 
-# Konfiguration
+# Configuration
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s"
 )
@@ -125,14 +125,14 @@ def prep_db():
         "host=localhost port=5432 user=postgres password=example", autocommit=True
     ) as conn:
         res = conn.execute("SELECT 1 FROM pg_database WHERE datname='test'")
-        if len(res.fetchall()) == 0:  # Prüft, ob die Datenbank 'test' existiert.
+        if len(res.fetchall()) == 0:  # Checks whether the database 'test' exists.
             conn.execute(
                 "create database test;"
-            )  # Erstellt die Datenbank, falls sie fehlt.
+            )  # Creates the database if it is missing.
         with psycopg.connect(
             "host=localhost port=5432 dbname=test user=postgres password=example"
         ) as conn:
-            conn.execute(CREATE_TABLE_STATEMENT)  # Erstellt die Tabelle.
+            conn.execute(CREATE_TABLE_STATEMENT)  # Creates the table.
 
 
 @task

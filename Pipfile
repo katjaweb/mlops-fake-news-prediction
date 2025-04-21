@@ -29,10 +29,7 @@ scipy = "==1.15.2"
 spacy = "*"
 textblob = "*"
 tqdm = "*"
-pytest = "*"
-hyperopt = "*"
-seaborn = "*"
-deepdiff = "*"
+xgboost = "*"
 
 [dev-packages]
 pytest = "*"
@@ -40,6 +37,7 @@ pylint = "*"
 black = "*"
 isort = "*"
 pre-commit = "*"
+deepdiff = "*"
 
 [requires]
 python_version = "3.12"

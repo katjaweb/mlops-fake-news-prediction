@@ -21,7 +21,7 @@ with open(config_path, "r", encoding='utf-8') as file:
 
 production_run_id = config['mlflow']['production_run_id']
 model_bucket = config['mlflow']['model_bucket']
-experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '4')
+experiment_id = config['mlflow']['experiment_id']
 
 MODEL_LOCATION = (
     f's3://{model_bucket}/{experiment_id}/{production_run_id}/artifacts/models'

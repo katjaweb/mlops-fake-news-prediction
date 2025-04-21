@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# make bash file executable
+# chmod +x integration_test/run.sh
+
+# run integration_test
+# ./integration_test/run.sh
+
 cd "$(dirname "$0")"
 SCRIPT_DIR=$(pwd)
 PROJECT_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
@@ -46,12 +52,6 @@ fi
 
 # Stop and remove the container
 echo "Stopping container..."
-docker stop ${CONTAINER_NAME}
+docker stop "$CONTAINER_ID"
 # docker rm ${CONTAINER_NAME}
 echo "Container stopped.
-
-# make bash file executable
-# chmod +x integration_test/run.sh
-
-# run integration_test
-# ./integration_test/run.sh
