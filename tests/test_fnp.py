@@ -1,6 +1,8 @@
 """
 Runs several tests for preprocessing
 """
+
+# pylint: disable=unsubscriptable-object
 import os
 import sys
 import pandas as pd
@@ -22,6 +24,7 @@ def test_avg_word_length():
     actual_word_length = prep.avg_word_length(text)
 
     assert expected_word_length == actual_word_length
+
 
 def test_prepare_features():
     """
@@ -65,7 +68,7 @@ def test_apply_text_cleaner():
 
     df_test = prep.apply_text_cleaner(df_test, 'title_text')
 
-    actual_result = df_test['title_text_clean'].iloc[0] # pylint: disable=unsubscriptable-object
+    actual_result = df_test['title_text_clean'].iloc[0]
 
     expected_result = ' donald trump explain put 90 day pause sweeping tariff scheme tell reporter country start get yippy exactly president mean keen golfer refer call yip often hinder clean putt else entirely dr robbie love senior lecturer english language linguistics aston university tell yip trace back far 1400 evidence use refer cheep sound newly hatch bird 20th century adapt refer high pitch barking small dog also kind short high pitch cry include make people love explain adjective yippy seem derive sense describe case human quality excitable anxious also perhaps annoying yelping like dog expert though stress sure whether exactly trump intend imply address reporter outside white house may mean inundate communication tariff and/or perhaps mean close skittish love observe perhaps reveal regard leader country'
 
@@ -83,6 +86,7 @@ def test_sentence_count():
     expected_result = 9
 
     assert actual_result == expected_result
+
 
 def test_special_character_count():
     """
