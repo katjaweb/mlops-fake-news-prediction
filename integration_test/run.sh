@@ -6,7 +6,10 @@
 # run integration_test
 # ./integration_test/run.sh
 
-cd "$(dirname "$0")"
+if [[ -z "${GITHUB_ACTIONS}" ]]; then
+  cd "$(dirname "$0")"
+fi
+
 SCRIPT_DIR=$(pwd)
 PROJECT_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
 
