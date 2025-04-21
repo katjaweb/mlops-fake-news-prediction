@@ -17,15 +17,19 @@ RUN apt-get update && apt-get install -y libgomp1
 COPY ./utils/preprocessing.py /app/utils/preprocessing.py
 COPY ./02_deployment/predict.py /app/predict.py
 
+RUN mkdir -p /config
+COPY ./config/vars.yaml /config/vars.yaml
+
+
 EXPOSE 9696
 
 ENTRYPOINT [ "gunicorn", "--bind=0.0.0.0:9696",  "predict:app" ]
 
-#Image build command: 
+#Image build command:
 # cd ../
 # docker build -f 02_deployment/Dockerfile -t fake-news-prediction-service:v1 .
 
-#Container running command: 
+#Container running command:
 # docker run -it --rm -p 9696:9696 -v /home/codespace/.aws:/root/.aws fake-news-prediction-service:v1
 
 # Run test

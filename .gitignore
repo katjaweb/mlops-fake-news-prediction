@@ -175,3 +175,4 @@ mlflow.db
 notes.md
 data/
 02_deployment/Untitled.ipynb
+__pycache__

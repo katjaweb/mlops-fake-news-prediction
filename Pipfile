@@ -29,9 +29,17 @@ scipy = "==1.15.2"
 spacy = "*"
 textblob = "*"
 tqdm = "*"
+pytest = "*"
+hyperopt = "*"
+seaborn = "*"
+deepdiff = "*"
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
+black = "*"
+isort = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.12"
