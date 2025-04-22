@@ -1,6 +1,6 @@
 # version: '3.7'
 
-volumes: 
+volumes:
   grafana_data: {}
 
 networks:
@@ -26,7 +26,7 @@ services:
       - "8080:8080"
     networks:
       - back-tier
-      - front-tier  
+      - front-tier
 
   grafana:
     image: grafana/grafana-enterprise
