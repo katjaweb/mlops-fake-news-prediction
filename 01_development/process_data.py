@@ -19,7 +19,7 @@ dataset_path = os.getenv('DATASET_PATH', 'datasets/WELFake_Dataset.csv')  # raw 
 
 
 # Load raw dataset
-print('load raw dataset')
+# print('load raw dataset')
 df = uf.load_file_s3(s3_bucket, dataset_path, 'csv')
 print('raw dataset was loaded')
 
