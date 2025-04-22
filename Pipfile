@@ -30,6 +30,8 @@ spacy = "*"
 textblob = "*"
 tqdm = "*"
 xgboost = "*"
+seaborn = "*"
+hyperopt = "*"
 
 [dev-packages]
 pytest = "*"

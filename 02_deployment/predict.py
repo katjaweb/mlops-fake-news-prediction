@@ -11,8 +11,8 @@ import mlflow
 import pandas as pd
 from flask import Flask, jsonify, request
 
+# pylint: disable=duplicate-code
 here = os.path.dirname(__file__)
-
 sys.path.append(os.path.join(here, '..'))
 
 from utils.preprocessing import prepare_features, apply_text_cleaner
