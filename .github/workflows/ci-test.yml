@@ -1,10 +1,11 @@
 name: CI-Tests
 on:
+  push:
+    branches:
+      - 'develop'
   pull_request:
     branches:
       - 'develop'
-    paths:
-      - '**'
 
 env:
   AWS_DEFAULT_REGION: 'eu-west-1'
