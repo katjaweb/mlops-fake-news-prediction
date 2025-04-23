@@ -52,7 +52,7 @@ fi
 
 echo "Container with image $DOCKER_IMAGE_NAME is running (ID: $CONTAINER_ID)."
 
-sleep 5
+sleep 10
 
 pipenv run python integration_test.py
 

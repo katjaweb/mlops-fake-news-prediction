@@ -25,8 +25,6 @@ EXPOSE 9696
 
 ENTRYPOINT [ "gunicorn", "--bind=0.0.0.0:9696",  "predict:app" ]
 
-CMD ["python" , "/app/predict.py"]
-
 #Image build command:
 # cd ../
 # docker build -f 02_deployment/Dockerfile -t fake-news-prediction-service:v1 .
