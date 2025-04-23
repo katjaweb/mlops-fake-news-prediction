@@ -36,6 +36,17 @@ CONTAINER_ID=$(docker ps -q -f "ancestor=$DOCKER_IMAGE_NAME")
 
 if [ -z "$CONTAINER_ID" ]; then
     echo "No container is running for the image: $DOCKER_IMAGE_NAME"
+
+    echo "Checking exited containers for logs..."
+    EXITED_CONTAINER_ID=$(docker ps -a -q -f "ancestor=$DOCKER_IMAGE_NAME")
+
+    if [ -n "$EXITED_CONTAINER_ID" ]; then
+        echo "Logs from exited container:"
+        docker logs "$EXITED_CONTAINER_ID"
+    else
+        echo "No exited container found for image."
+    fi
+
     exit 1
 fi
 
