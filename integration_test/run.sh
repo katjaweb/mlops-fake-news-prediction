@@ -18,13 +18,13 @@ IMAGE_TAG="v1"
 DOCKER_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
 
 # Build
-echo "🔧 Building Docker image..."
+echo 'Building Docker image...'
 # docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ./02_deployment
 
 docker build -f "${PROJECT_ROOT}/02_deployment/Dockerfile" -t "$DOCKER_IMAGE_NAME" "$PROJECT_ROOT"
 
 # Run
-echo "Starting container..."
+echo 'Starting container...'
 docker run -it -d --rm \
   -p 9696:9696 \
   -v ~/.aws:/root/.aws \
@@ -41,10 +41,10 @@ if [ -z "$CONTAINER_ID" ]; then
     EXITED_CONTAINER_ID=$(docker ps -a -q -f "ancestor=$DOCKER_IMAGE_NAME")
 
     if [ -n "$EXITED_CONTAINER_ID" ]; then
-        echo "Logs from exited container:"
+        echo 'Logs from exited container:'
         docker logs "$EXITED_CONTAINER_ID"
     else
-        echo "No exited container found for image."
+        echo 'No exited container found for image.'
     fi
 
     exit 1
@@ -52,20 +52,39 @@ fi
 
 echo "Container with image $DOCKER_IMAGE_NAME is running (ID: $CONTAINER_ID)."
 
+echo 'Wait for the Flask service at localhost:9696 ...'
+
+# Wait for flask for up to 10 seconds
+for i in {1..10}; do
+    if curl -s http://localhost:9696 >/dev/null; then
+        echo "Flask is ready"
+        break
+    fi
+    echo "Not ready yet... Try $i"
+    sleep 1
+done
+
+# Check whether the server was reachable
+if ! curl -s http://localhost:9696 >/dev/null; then
+    echo 'Flask service did not respond in time.'
+    exit 1
+fi
+
+echo 'Starting integration-test...'
 pipenv run python integration_test.py
 
 ERROR_CODE=$?
 
 if [ ${ERROR_CODE} -eq 0 ]; then
-    echo "Python script executed successfully."
+    echo 'Python script executed successfully.'
 else
-    echo "Failed to execute Python script."
+    echo 'Failed to execute Python script.'
     docker logs $CONTAINER_ID
     exit ${ERROR_CODE}
 fi
 
 # Stop and remove the container
-echo "Stopping container..."
+echo 'Stopping container...'
 docker stop "$CONTAINER_ID"
 # docker rm ${CONTAINER_NAME}
-echo "Container stopped.
+echo 'Container stopped.'
