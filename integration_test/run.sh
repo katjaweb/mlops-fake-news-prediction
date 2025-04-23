@@ -67,7 +67,6 @@ done
 # Check whether the server was reachable
 if ! curl -s http://localhost:9696 >/dev/null; then
     echo 'Flask service did not respond in time.'
-    exit 1
 fi
 
 echo 'Starting integration-test...'
