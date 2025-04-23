@@ -43,6 +43,9 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Make integration test script executable
+        run: chmod +x integration_test/run.sh
+
       - name: Integration Test
         working-directory: 'integration_test'
         run: |
