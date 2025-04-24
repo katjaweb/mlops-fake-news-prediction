@@ -23,7 +23,8 @@ COPY ./config/vars.yaml /config/vars.yaml
 
 EXPOSE 9696
 
-ENTRYPOINT [ "gunicorn", "--bind=0.0.0.0:9696",  "predict:app" ]
+ENTRYPOINT [ "gunicorn", "--bind=0.0.0.0:9696", "predict:app", "--log-level=debug", "--capture-output" ]
+
 
 #Image build command:
 # cd ../

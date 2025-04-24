@@ -34,6 +34,8 @@ sleep 5
 
 CONTAINER_ID=$(docker ps -q -f "ancestor=$DOCKER_IMAGE_NAME")
 
+docker logs "$CONTAINER_ID"
+
 if [ -z "$CONTAINER_ID" ]; then
     echo "No container is running for the image: $DOCKER_IMAGE_NAME"
 
