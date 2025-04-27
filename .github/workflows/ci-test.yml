@@ -43,6 +43,10 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Check S3 model bucket
+        run: |
+          aws s3 ls s3://fake-news-prediczion/1/2ff08b357a98410992dca762b2133023/artifacts/models
+
       - name: Make integration test script executable
         run: chmod +x integration_test/run.sh
 
