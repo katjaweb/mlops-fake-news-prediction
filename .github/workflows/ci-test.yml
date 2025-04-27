@@ -47,6 +47,12 @@ jobs:
         run: |
           aws s3 ls s3://fake-news-prediction/1/2ff08b357a98410992dca762b2133023/artifacts/models
 
+      - name: Check S3 Download
+        run: |
+          aws s3 cp s3://fake-news-prediction/1/2ff08b357a98410992dca762b2133023/artifacts/models/model.pkl model.pkl
+          ls -lh model.pkl
+
+
       - name: Start server
         run: |
           gunicorn --bind 0.0.0.0:9696 predict:app &
