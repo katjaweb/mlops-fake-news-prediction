@@ -47,6 +47,11 @@ jobs:
         run: |
           aws s3 ls s3://fake-news-prediction/1/2ff08b357a98410992dca762b2133023/artifacts/models
 
+      - name: Start server
+        run: |
+          gunicorn --bind 0.0.0.0:9696 predict:app &
+          sleep 5
+
       - name: Make integration test script executable
         run: chmod +x integration_test/run.sh
 
@@ -54,3 +59,6 @@ jobs:
         working-directory: 'integration_test'
         run: |
           . run.sh
+
+      - name: Stop server
+        run: kill $(lsof -t -i:9696)
