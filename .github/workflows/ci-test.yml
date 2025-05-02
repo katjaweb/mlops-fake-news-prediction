@@ -1,10 +1,11 @@
 name: CI-Tests
 on:
+  push:
+    branches:
+      - 'develop'
   pull_request:
     branches:
       - 'develop'
-    paths:
-      - '**'
 
 env:
   AWS_DEFAULT_REGION: 'eu-west-1'
@@ -26,6 +27,9 @@ jobs:
           pip install pipenv
           pipenv install --dev
 
+      - name: Download SpaCy model
+        run: pipenv run python -m spacy download en_core_web_sm
+
       - name: Run Unit tests
         run: pipenv run pytest tests/
 
@@ -39,7 +43,15 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Start server
+        run: |
+          gunicorn --bind 0.0.0.0:9696 predict:app &
+          sleep 5
+
+      - name: Make integration test script executable
+        run: chmod +x integration_test/run.sh
+
       - name: Integration Test
-        working-directory: 'integration_test/integration_test'
+        working-directory: 'integration_test'
         run: |
           . run.sh
