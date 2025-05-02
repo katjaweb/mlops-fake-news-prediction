@@ -25,10 +25,30 @@ docker build -f "${PROJECT_ROOT}/02_deployment/Dockerfile" -t "$DOCKER_IMAGE_NAM
 
 # Run
 echo 'Starting container...'
-docker run -it -d --rm \
-  -p 9696:9696 \
-  -v ~/.aws:/root/.aws \
-  "$DOCKER_IMAGE_NAME"
+
+if [ "$GITHUB_ACTIONS" = "true" ]; then
+  echo "Running inside GitHub Actions"
+
+  docker run -it -d --rm \
+    -p 9696:9696 \
+    -e AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY \
+    -e AWS_REGION \
+    "$DOCKER_IMAGE_NAME"
+
+else
+  echo "Running locally"
+
+  docker run -it -d --rm \
+    -p 9696:9696 \
+    -v ~/.aws:/root/.aws \
+    "$DOCKER_IMAGE_NAME"
+fi
+
+# docker run -it -d --rm \
+#   -p 9696:9696 \
+#   -v ~/.aws:/root/.aws \
+#   "$DOCKER_IMAGE_NAME"
 
 sleep 5
 
