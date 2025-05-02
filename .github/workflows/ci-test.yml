@@ -43,16 +43,6 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Check S3 model bucket
-        run: |
-          aws s3 ls s3://fake-news-prediction/1/2ff08b357a98410992dca762b2133023/artifacts/models
-
-      - name: Check S3 Download
-        run: |
-          aws s3 cp s3://fake-news-prediction/1/2ff08b357a98410992dca762b2133023/artifacts/models/model.pkl model.pkl
-          ls -lh model.pkl
-
-
       - name: Start server
         run: |
           gunicorn --bind 0.0.0.0:9696 predict:app &
@@ -65,6 +55,3 @@ jobs:
         working-directory: 'integration_test'
         run: |
           . run.sh
-
-      - name: Stop server
-        run: kill $(lsof -t -i:9696)
