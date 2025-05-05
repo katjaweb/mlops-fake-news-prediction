@@ -3,8 +3,10 @@ contains helper functions
 """
 
 import io
+import os
 from datetime import datetime
 
+import yaml
 import boto3
 import pandas as pd
 import seaborn as sns
@@ -123,6 +125,7 @@ def upload_to_s3(file, s3_bucket, dataset):
         dataset (str): Base name for the file (used in the filename).
     """
     s3_client = boto3.client('s3')
+    config = load_config()
 
     # actual date
     date = datetime.now().strftime("%Y-%m-%d")
@@ -144,6 +147,18 @@ def upload_to_s3(file, s3_bucket, dataset):
 
     s3_client.put_object(Bucket=s3_bucket, Key=file_key, Body=buffer.getvalue())
     print(f"File saved under {file_key} in {s3_bucket}.")
+    config['data'][dataset] = file_key
+
+
+def load_config():
+    """
+    load config file
+    """
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(current_dir, '..', 'config', 'vars.yaml')
+    with open(config_path, "r", encoding='utf-8') as file:
+        config = yaml.safe_load(file)
+    return config
 
 
 # def log_model(

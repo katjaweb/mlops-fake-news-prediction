@@ -14,7 +14,8 @@ import numpy as np
 import mlflow
 import pandas as pd
 import psycopg
-from prefect import flow, task
+
+# from prefect import flow, task
 from evidently import ColumnMapping
 from evidently.report import Report
 from evidently.metrics import (
@@ -34,7 +35,7 @@ with open(config_path, "r", encoding='utf-8') as file:
     config = yaml.safe_load(file)
 
 model_bucket = config['mlflow']['model_bucket']
-experiment_id = os.getenv('MLFLOW_EXPERIMENT_ID', '4')
+experiment_id = config['mlflow']['experiment_id']
 run_id = config['mlflow']['production_run_id']
 
 # Configuration
@@ -114,7 +115,7 @@ report = Report(
 )
 
 
-@task
+# @task
 def prep_db():
     """
     Initializes the PostgreSQL database.
@@ -135,7 +136,7 @@ def prep_db():
             conn.execute(CREATE_TABLE_STATEMENT)  # Creates the table.
 
 
-@task
+# @task
 def calculate_metrics_postgresql(curr, i):
     """
     Calculates the metrics for a specific day and saves the results in the database.
@@ -190,7 +191,7 @@ def calculate_metrics_postgresql(curr, i):
     )
 
 
-@flow
+# @flow
 def batch_monitoring_backfill():
     """
     Performs backfill monitoring and stores metrics for each day in the data area.

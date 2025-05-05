@@ -277,17 +277,13 @@ def register_model_if_better(
 
 # Load features and target
 
-X_train = load_file_s3(
-    'fake-news-prediction', 'datasets/X_train_2025-04-08.parquet', 'parquet'
-)
-X_test = load_file_s3(
-    'fake-news-prediction', 'datasets/X_test_2025-04-08.parquet', 'parquet'
-)
-X_val = load_file_s3('fake-news-prediction', 'datasets/X_val.parquet', 'parquet')
+X_train = load_file_s3('fake-news-prediction', config['data']['X_train'], 'parquet')
+X_test = load_file_s3('fake-news-prediction', config['data']['X_val'], 'parquet')
+X_val = load_file_s3('fake-news-prediction', config['data']['X_test'], 'parquet')
 
-y_train = load_file_s3('fake-news-prediction', 'datasets/y_train_2025-04-08.csv', 'csv')
-y_test = load_file_s3('fake-news-prediction', 'datasets/y_test_2025-04-08.csv', 'csv')
-y_val = load_file_s3('fake-news-prediction', 'datasets/y_val.csv', 'csv')
+y_train = load_file_s3('fake-news-prediction', config['data']['y_train'], 'csv')
+y_test = load_file_s3('fake-news-prediction', config['data']['y_test'], 'csv')
+y_val = load_file_s3('fake-news-prediction', config['data']['y_val'], 'csv')
 
 y_train = y_train.loc[:, 'label']
 y_test = y_test.loc[:, 'label']

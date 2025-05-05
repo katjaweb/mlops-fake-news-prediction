@@ -19,8 +19,6 @@ DOCKER_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
 
 # Build
 echo 'Building Docker image...'
-# docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ./02_deployment
-
 docker build -f "${PROJECT_ROOT}/02_deployment/Dockerfile" -t "$DOCKER_IMAGE_NAME" "$PROJECT_ROOT"
 
 # Run
@@ -44,11 +42,6 @@ else
     -v ~/.aws:/root/.aws \
     "$DOCKER_IMAGE_NAME"
 fi
-
-# docker run -it -d --rm \
-#   -p 9696:9696 \
-#   -v ~/.aws:/root/.aws \
-#   "$DOCKER_IMAGE_NAME"
 
 sleep 5
 
@@ -105,7 +98,7 @@ else
 fi
 
 # Stop and remove the container
-echo 'Stopping container...'
+echo 'Stopping and removing container...'
 docker stop "$CONTAINER_ID"
-# docker rm ${CONTAINER_NAME}
+docker rm ${CONTAINER_NAME}
 echo 'Container stopped.'

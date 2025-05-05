@@ -15,9 +15,28 @@ build: quality_checks test
 integration_test: build
 	bash ./integration_test/run.sh
 
-publish: build integration_test
-	LOCAL_IMAGE_NAME=${LOCAL_IMAGE_NAME} bash scripts/publish.sh
+run_process_data:
+	python 01_development/process_data.py
+
+start_mlflow:
+	mlflow server \
+	  --backend-store-uri=sqlite:///mlflow.db \
+	  --default-artifact-root=s3://fake-news-prediction/ \
+	  --host 0.0.0.0 --port 5000 &
+
+run_train: start_mlflow
+	python 01_development/train.py
+
+# set up monitoring
+monitoring:
+	docker-compose up db adminer grafana -d --build
+	sleep 5
+	curl http://localhost:3000
+	curl http://localhost:8080
+	python 03_monitoring/monitoring.py
 
 setup:
 	pipenv install --dev
 	pre-commit install
+	bash -c "chmod +x integration/run.sh"
+	aws configure
