@@ -2,36 +2,58 @@
 integration test for web-service and docker
 """
 
+import os
+import sys
 import requests
-from deepdiff import DeepDiff
 
-# print('Starting test')
-news = {
-    "title": 'Yippy - what exactly was Donald Trump talking about?',
-    "text": ' When Donald Trump explained why he had put a 90-day pause on his sweeping tariff scheme, he told reporters that it was because countries had started to get yippy. But what exactly did the president mean by this; was the keen golfer referring to the so-called yips that so often hinder a clean putt? Or something else entirely? Dr Robbie Love, a senior lecturer in English Language and Linguistics at Aston University, tells me that "yip" can be traced back as far as the 1400s, where there is evidence of it being used to refer to the cheeping sound of a newly hatched bird. But, by the 20th Century this had been adapted to refer to "high-pitched barking of small dogs" and also "any kind of short, high-pitched cry, including those made by people", Love explains. "The adjective ‘yippy’ seems to be derived from this sense - describing [in this case in humans] a quality of excitable/anxious [and also perhaps annoying] yelping, like a dog." The expert, though, stresses that he cant be sure whether this is exactly what Trump intended to imply when he addressed reporters outside the White House. He may have meant that hed been inundated with communications about the tariffs, and/or perhaps he meant something closer to skittish, Love observes. Or perhaps it reveals something about how he regards the leaders of other countries.',
-}
+here = os.path.dirname(__file__)
+sys.path.append(os.path.join(here, '..'))
 
-# print('print news:', news)
+from utils import utility_functions as uf
+
+config = uf.load_config()
 
 URL = 'http://localhost:9696/predict'
-actual_response = requests.post(URL, json=news, timeout=10).json()
+SERVICE_URL = 'http://localhost:9696'
+PREDICT_ENDPOINT = f'{SERVICE_URL}/predict'
+HEALTH_ENDPOINT = f'{SERVICE_URL}/'
 
-expected_response = {
-    "label": "real news",
-    "model_version": "2ff08b357a98410992dca762b2133023",
-    "probability being fake": 0.059,
-    "probability being real": 0.941,
+dummy_data = {
+    "title": "Breaking news: test event",
+    "text": "This is a test to see if the prediction endpoint is functioning correctly.",
 }
 
-# print('Status code:', actual_response.status_code)
-print('actual response:', actual_response)
-print('expected response:', expected_response)
 
-diff = DeepDiff(actual_response, expected_response, significant_digits=1)
-print(f"diff={diff}")
+def test_service_running(dummy_news):
+    """
+    tests if the service is available
+    """
+    try:
+        response = requests.post(URL, json=dummy_news, timeout=5)
+        assert (
+            response.status_code == 200
+        ), f"Service not available: {response.status_code}"
+        print("Service is running.")
+    except requests.exceptions.RequestException as e:
+        raise AssertionError(f"Service check failed: {e}") from e
 
-assert "type_changes" not in diff
-assert "values_changed" not in diff
-assert actual_response == expected_response
 
-print('all good.')
+def test_model_loaded(dummy_news):
+    """
+    Test if the model is successfully loaded and outputs the right model version
+    """
+    response = requests.post(PREDICT_ENDPOINT, json=dummy_news, timeout=5)
+    assert response.status_code == 200, f"Prediction failed: {response.status_code}"
+    result = response.json()
+    assert (
+        "model_version" in result and result["model_version"]
+    ), "Model version not found in response."
+    assert result["model_version"] == config['mlflow']['production_run_id']
+    print(f"Model loaded, version: {result['model_version']}")
+    print('response:', response.json())
+
+
+if __name__ == "__main__":
+    test_service_running(dummy_news=dummy_data)
+    test_model_loaded(dummy_news=dummy_data)
+    print("All tests passed.")

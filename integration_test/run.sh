@@ -98,7 +98,7 @@ else
 fi
 
 # Stop and remove the container
-echo 'Stopping and removing container...'
+echo 'Stopping container...'
 docker stop "$CONTAINER_ID"
-docker rm ${CONTAINER_NAME}
+# docker rm ${IMAGE_NAME}
 echo 'Container stopped.'

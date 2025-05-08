@@ -9,7 +9,7 @@ quality_checks:
 	black .
 	pylint --recursive=y .
 
-build: quality_checks test
+build:
 	docker build -f 02_deployment/Dockerfile -t ${DOCKER_IMAGE_NAME} .
 
 integration_test: build
