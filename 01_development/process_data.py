@@ -5,16 +5,21 @@ and upload feature sets to s3.
 
 import os
 import sys
+from datetime import datetime
 
+import yaml
 from sklearn.model_selection import train_test_split
-
-from utils import preprocessing as prep
-from utils import utility_functions as uf
 
 here = os.path.dirname(__file__)
 sys.path.append(os.path.join(here, '..'))
 
-s3_bucket = os.getenv('S3_BUCKET', 'fake-news-prediction')
+from utils import preprocessing as prep
+from utils import utility_functions as uf
+
+config = uf.load_config()
+
+
+s3_bucket = config['mlflow']['model_bucket']
 dataset_path = os.getenv('DATASET_PATH', 'datasets/WELFake_Dataset.csv')  # raw dataset
 
 
@@ -103,3 +108,19 @@ print('upload target to s3')
 uf.upload_to_s3(y_train, s3_bucket, 'y_train')
 uf.upload_to_s3(y_val, s3_bucket, 'y_val')
 uf.upload_to_s3(y_test, s3_bucket, 'y_test')
+
+date = datetime.now().strftime("%Y-%m-%d")
+
+config['data']['X_train'] = f'datasets/X_train_{date}.parquet'
+config['data']['X_val'] = f'datasets/X_val_{date}.parquet'
+config['data']['X_test'] = f'datasets/X_test_{date}.parquet'
+
+config['data']['y_train'] = f'datasets/y_train_{date}.csv'
+config['data']['y_val'] = f'datasets/y_val_{date}.csv'
+config['data']['y_test'] = f'datasets/y_test_{date}.csv'
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(current_dir, '..', 'config', 'vars.yaml')
+
+with open(config_path, "w", encoding='utf-8') as file:
+    yaml.dump(config, file, default_flow_style=False, allow_unicode=True)

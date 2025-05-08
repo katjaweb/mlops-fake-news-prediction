@@ -1,5 +1,12 @@
 version: "3.9"
 
+volumes:
+  grafana_data: {}
+
+networks:
+  front-tier:
+  back-tier:
+
 services:
   fake_news_prediction:
     build:
@@ -16,3 +23,37 @@ services:
       - MLFLOW_TRACKING_URI=https://fictional-adventure-wr9prgq477xwfgggp.github.dev/:5000
     restart: always
     entrypoint: ["gunicorn", "--bind=0.0.0.0:9696", "predict:app"]
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - back-tier
+      - front-tier
+
+  grafana:
+    image: grafana/grafana-enterprise
+    user: "472"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./03_monitoring/config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - ./03_monitoring/config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./03_monitoring/dashboards:/opt/grafana/dashboards
+    networks:
+      - back-tier
+      - front-tier
+    restart: always
