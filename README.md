@@ -51,7 +51,7 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 * Performs inference and returns classification results
 * Outputs both predicted label and class probabilities
 
-**Training Pipeline:** A batch monitoring pipeline that tracks model and data quality over time using EvidentlyAI, stores computed metrics in a PostgreSQL database, and visualizes them with Grafana. It evaluates model performance and data drift daily using held-out labeled data, ensuring long-term model reliability.
+**Monitoring Pipeline:** A batch monitoring pipeline that tracks model and data quality over time using EvidentlyAI, stores computed metrics in a PostgreSQL database, and visualizes them with Grafana. It evaluates model performance and data drift daily using held-out labeled data, ensuring long-term model reliability.
 
 * Batch Monitoring with EvidentlyAI for drift, missing values, and classification metrics
 * Loads reference and validation data from S3 for comparison
