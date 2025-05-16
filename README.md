@@ -1,4 +1,13 @@
-# mlops-fake-news-prediction
+# Fake News detection Web-service
+
+This project addresses the growing challenge of online disinformation by providing a web-based tool to detect fake news. Built with Flask, the service uses a supervised machine learning model (LightGBM) and natural language processing techniques to classify English news articles as real or fake. It also provides a probability score to indicate prediction confidence.
+
+# Key features:
+* Text preprocessing with tokenization and stopword removal
+* Feature extraction using Bag-of-Words (BoW)
+* Model trained on a labeled dataset of English news
+
+The goal is to support journalists, researchers, and the public in critically assessing the credibility of online information.
 
 About Dataset
 
