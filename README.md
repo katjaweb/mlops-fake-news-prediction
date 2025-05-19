@@ -23,11 +23,14 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 * **scikit-learn:** Core library for building and training the fake news classification model.
 * **MLflow:** Used for tracking experiments, model registry, and reproducibility.
 * **hyperopt:** Enables efficient hyperparameter optimization.
+* **Amazon Web Service (AWS):** Used for data storage and model artifacts via S3.
 * **Flask:** Lightweight web framework powering the backend API.
 * **EvidentlyAI:** Monitors data and model performance to detect drift and quality issues.
 * **PostgreSQL:** Stores metadata, logs, and model-related data.
 * **Grafana:** Dashboard for monitoring system and model metrics.
 * **Docker:** Containerizes the entire application for easy deployment and scalability.
+* **Pytest, Pylint, black, GitHub pre-commit hooks:** Ensure code quality through unit testing, linting, and automatic code formatting.
+* **Github Actions:** Automates continuous integration (CI) workflows for testing and quality checks.
 
 # System architecture
 
@@ -62,3 +65,59 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 * Dashboards powered by Grafana for visualization and analysis
 * Automatic table creation for metric storage if missing
 
+**CI-Tests:** GitHub Actions workflow that runs on pushes and pull requests to the develop branch. It sets up a Python environment, installs dependencies, runs unit tests with Pytest, performs linting with Pylint, and conducts integration tests by deploying the Flask app and executing test scripts. AWS credentials are configured for secure access to required resources.
+
+# Getting started
+
+Make sure you have docker
+
+Follow these steps to set up and run the project locally:
+
+Clone the repository
+
+<pre><code>git clone https://github.com/katjaweb/mlops-fake-news-prediction.git
+cd mlops-fake-news-prediction</code></pre>
+
+**2. Install dependencies**
+
+Make sure you have Python 3.12+ and Pipenv installed.
+
+```bash
+make setup
+```
+
+The make setup command prepares the local development environment by installing all required dependencies, enabling code quality checks, configuring permissions for integration tests, and setting up AWS credentials. Specifically, it installs development packages using Pipenv, sets up Git pre-commit hooks for linting and formatting, makes the integration test script executable, and initializes AWS CLI configuration for accessing cloud resources.
+
+**3. Download required NLP model**
+
+```bash
+pipenv run python -m spacy download en_core_web_sm
+```
+
+Run text processing and feature pipeline
+
+```bash
+make run_process_data
+```
+
+The `run_process_data` Makefile command executes the `process_data.py` script located in the `01_development` folder. This script handles raw data processing, including feature engineering and text cleaning, saves the cleaned data to S3, and prepares it for model training.
+
+Run the training pipeline
+
+```bash
+make train
+```
+
+The `make train` command starts an MLflow tracking server with a local SQLite database as the backend and an S3 bucket as the artifact store. The command first launches the MLflow server and then executes the training script (`train.py`) to train a model and log its artifacts and metrics to the MLflow server.
+
+**4. Run the application locally**
+
+```bash
+pipenv run python app.py
+```
+
+**5. Run tests**
+
+```bash
+pipenv run pytest tests/
+```
