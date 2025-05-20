@@ -69,7 +69,17 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 
 # Getting started
 
-Make sure you have docker
+Make sure you have docker and anaconda installed. For this project anaconda Version xy and docker xyz were used. You also need AWS CLI to run this project.
+
+If you want to install the same distribution, then follow the instructions here:
+
+```bash
+[[curl -O https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh](https://www.anaconda.com/docs/getting-started/anaconda/install)]
+```
+
+The AWS CLI install and update instructions can be found here:
+
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
 Follow these steps to set up and run the project locally:
 
@@ -89,6 +99,18 @@ make setup
 The make setup command prepares the local development environment by installing all required dependencies, enabling code quality checks, configuring permissions for integration tests, and setting up AWS credentials. Specifically, it installs development packages using Pipenv, sets up Git pre-commit hooks for linting and formatting, makes the integration test script executable, and initializes AWS CLI configuration for accessing cloud resources.
 
 **3. Download required NLP model**
+
+```bash
+pipenv run python -m spacy download en_core_web_sm
+```
+
+You need to create an s3 bucket to store the datasets and artifacts from experiment tracking. For that you can run the following command. Please note, that your bucket name has to be unique and that you cannot use the same name as in the projet. To create a unique bucket name, you cann add your name at the end of the following command. You can also change to the region you wish to:
+
+```bash
+aws s3api create-bucket --bucket fake-news-prediction-katja --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
+```
+
+Then go to cofig/vars.yaml and change the [mlflow][model_bucket] name to your bucket name.
 
 ```bash
 pipenv run python -m spacy download en_core_web_sm
