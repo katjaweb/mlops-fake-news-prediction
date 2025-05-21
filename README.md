@@ -69,26 +69,24 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 
 # Getting started
 
+Follow these steps to set up and run the project locally:
+
 Make sure you have docker and anaconda installed. For this project anaconda Version xy and docker xyz were used. You also need AWS CLI to run this project.
 
-If you want to install the same distribution, then follow the instructions here:
+To install Ananconda distribution follow the instructions here:
 
-```bash
-[[curl -O https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh](https://www.anaconda.com/docs/getting-started/anaconda/install)]
-```
+[[https://www.anaconda.com/docs/getting-started/anaconda/install](https://www.anaconda.com/docs/getting-started/anaconda/install)]
 
 The AWS CLI install and update instructions can be found here:
 
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-
-Follow these steps to set up and run the project locally:
 
 Clone the repository
 
 <pre><code>git clone https://github.com/katjaweb/mlops-fake-news-prediction.git
 cd mlops-fake-news-prediction</code></pre>
 
-**2. Install dependencies**
+**Install dependencies**
 
 Make sure you have Python 3.12+ and Pipenv installed.
 
@@ -98,7 +96,7 @@ make setup
 
 The make setup command prepares the local development environment by installing all required dependencies, enabling code quality checks, configuring permissions for integration tests, and setting up AWS credentials. Specifically, it installs development packages using Pipenv, sets up Git pre-commit hooks for linting and formatting, makes the integration test script executable, and initializes AWS CLI configuration for accessing cloud resources.
 
-**3. Download required NLP model**
+**Download required NLP model**
 
 ```bash
 pipenv run python -m spacy download en_core_web_sm
@@ -112,11 +110,21 @@ aws s3api create-bucket --bucket fake-news-prediction-katja --region eu-west-1 -
 
 Then go to cofig/vars.yaml and change the [mlflow][model_bucket] name to your bucket name.
 
+**Retrieve the dataset**
+
+You can download the dataset from here
+
 ```bash
-pipenv run python -m spacy download en_core_web_sm
+wget https://zenodo.org/records/4561253/files/WELFake_Dataset.csv
+```
+ 
+Then upload it to your s3-bucket that was created earlier. remember to replace the bucket name with your created bucket name.
+
+ ```bash
+aws s3 cp /workspaces/mlops-fake-news-prediction/WELFake_Dataset.csv s3://fake-news-prediction-katja/datasets/WELFake_Dataset.csv
 ```
 
-Run text processing and feature pipeline
+**Run text processing and feature pipeline**
 
 ```bash
 make run_process_data
@@ -124,10 +132,10 @@ make run_process_data
 
 The `run_process_data` Makefile command executes the `process_data.py` script located in the `01_development` folder. This script handles raw data processing, including feature engineering and text cleaning, saves the cleaned data to S3, and prepares it for model training.
 
-Run the training pipeline
+**Run the training pipeline**
 
 ```bash
-make train
+make run_train
 ```
 
 The `make train` command starts an MLflow tracking server with a local SQLite database as the backend and an S3 bucket as the artifact store. The command first launches the MLflow server and then executes the training script (`train.py`) to train a model and log its artifacts and metrics to the MLflow server.
