@@ -51,6 +51,7 @@ config['mlflow']['experiment_id'] = experiment_id
 model_bucket = config['mlflow']['model_bucket']
 
 
+
 def run_optimization(
     X_train,
     y_train,
@@ -175,7 +176,9 @@ def evaluate_model_from_run(
     model_bucket, experiment_id, run_id, X_val, y_val
 ):  # pylint: disable=invalid-name
     """Loads a model from an MLflow run and evaluates it on the validation data."""
-    model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/models'
+    # model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/models'
+    run = client.get_run(run_id)
+    model_location = os.path.join(run.info.artifact_uri, "models")
     print(f"Evaluating model from run_id={run_id} at location={model_location}")
     model = mlflow.sklearn.load_model(model_location)
     preds = model.predict(X_val)
@@ -277,13 +280,13 @@ def register_model_if_better(
 
 # Load features and target
 
-X_train = load_file_s3('fake-news-prediction', config['data']['X_train'], 'parquet')
-X_test = load_file_s3('fake-news-prediction', config['data']['X_val'], 'parquet')
-X_val = load_file_s3('fake-news-prediction', config['data']['X_test'], 'parquet')
+X_train = load_file_s3(model_bucket, config['data']['X_train'], 'parquet')
+X_test = load_file_s3(model_bucket, config['data']['X_val'], 'parquet')
+X_val = load_file_s3(model_bucket, config['data']['X_test'], 'parquet')
 
-y_train = load_file_s3('fake-news-prediction', config['data']['y_train'], 'csv')
-y_test = load_file_s3('fake-news-prediction', config['data']['y_test'], 'csv')
-y_val = load_file_s3('fake-news-prediction', config['data']['y_val'], 'csv')
+y_train = load_file_s3(model_bucket, config['data']['y_train'], 'csv')
+y_test = load_file_s3(model_bucket, config['data']['y_test'], 'csv')
+y_val = load_file_s3(model_bucket, config['data']['y_val'], 'csv')
 
 y_train = y_train.loc[:, 'label']
 y_test = y_test.loc[:, 'label']
