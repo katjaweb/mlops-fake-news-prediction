@@ -18,7 +18,9 @@ news = {
 
 # print('print news:', news)
 
-URL = 'http://localhost:9696/predict'
+# URL = 'http://localhost:9696/predict' # to test locally
+HOST = 'fake-news-service-env.eba-cryzmisk.eu-west-1.elasticbeanstalk.com'
+URL = f'http://{HOST}/predict'
 response = requests.post(URL, json=news, timeout=10)
 
 print('Status code:', response.status_code)
