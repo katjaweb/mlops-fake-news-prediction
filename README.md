@@ -1,5 +1,7 @@
 # Fake News Detection Web-service
 
+![news](./images/newspaper-973049_640.jpg)
+
 This project addresses the growing challenge of online disinformation by providing a web-based tool to detect fake news. Built with Flask, the service uses a supervised machine learning model (LightGBM) and natural language processing techniques to classify English news articles as real or fake. It also provides a probability score to indicate prediction confidence.
 
 # Key features
@@ -117,7 +119,7 @@ You can download the dataset from here
 ```bash
 wget https://zenodo.org/records/4561253/files/WELFake_Dataset.csv
 ```
- 
+
 Then upload it to your s3-bucket that was created earlier. remember to replace the bucket name with your created bucket name.
 
  ```bash
