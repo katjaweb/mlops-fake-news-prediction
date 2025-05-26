@@ -13,7 +13,7 @@ import pandas as pd
 from flask import Flask, jsonify, request
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)  # Oder INFO für weniger Spam
+logger.setLevel(logging.INFO)  # Oder INFO für weniger Spam
 
 # StreamHandler für stdout – das versteht Docker/GitHub Actions/Gunicorn
 handler = logging.StreamHandler(sys.stdout)
@@ -59,7 +59,7 @@ try:
     model = mlflow.sklearn.load_model(MODEL_LOCATION)
     logger.info("Model successfully loaded.")
 except Exception as e:
-    logger.error("Error occured when loadung the model.", exc_info=True)
+    logger.error("Error occured when loading the model.", exc_info=True)
     raise e
 
 
