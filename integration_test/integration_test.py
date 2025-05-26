@@ -13,10 +13,8 @@ from utils import utility_functions as uf
 
 config = uf.load_config()
 
-URL = 'http://localhost:9696/predict'
 SERVICE_URL = 'http://localhost:9696'
 PREDICT_ENDPOINT = f'{SERVICE_URL}/predict'
-HEALTH_ENDPOINT = f'{SERVICE_URL}/'
 
 dummy_data = {
     "title": "Breaking news: test event",
@@ -29,7 +27,7 @@ def test_service_running(dummy_news):
     tests if the service is available
     """
     try:
-        response = requests.post(URL, json=dummy_news, timeout=5)
+        response = requests.post(PREDICT_ENDPOINT, json=dummy_news, timeout=5)
         assert (
             response.status_code == 200
         ), f"Service not available: {response.status_code}"
