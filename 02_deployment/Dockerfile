@@ -18,7 +18,7 @@ COPY ./utils/preprocessing.py /app/utils/preprocessing.py
 COPY ./02_deployment/predict.py /app/predict.py
 
 RUN mkdir -p /config
-COPY ./config/vars.yaml /app/config/vars.yaml
+COPY ./config/vars.yaml /config/vars.yaml
 
 
 EXPOSE 9696
