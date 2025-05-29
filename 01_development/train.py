@@ -281,12 +281,17 @@ def register_model_if_better(
 # Load features and target
 
 X_train = load_file_s3(model_bucket, config['data']['X_train'], 'parquet')
-X_test = load_file_s3(model_bucket, config['data']['X_val'], 'parquet')
-X_val = load_file_s3(model_bucket, config['data']['X_test'], 'parquet')
+X_test = load_file_s3(model_bucket, config['data']['X_test'], 'parquet')
+X_val = load_file_s3(model_bucket, config['data']['X_val'], 'parquet')
 
 y_train = load_file_s3(model_bucket, config['data']['y_train'], 'csv')
 y_test = load_file_s3(model_bucket, config['data']['y_test'], 'csv')
 y_val = load_file_s3(model_bucket, config['data']['y_val'], 'csv')
+
+print("Shapes nach dem Laden:")
+print('train data:', X_train.shape, y_train.shape)
+print('val data:', X_val.shape, y_val.shape)
+print('test data:', X_test.shape, y_test.shape)
 
 y_train = y_train.loc[:, 'label']
 y_test = y_test.loc[:, 'label']
