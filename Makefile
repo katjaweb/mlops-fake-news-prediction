@@ -19,18 +19,25 @@ run_process_data:
 	python 01_development/process_data.py
 
 start_mlflow:
+	@bucket=$$(python3 -c "import yaml; print(yaml.safe_load(open('config/vars.yaml'))['mlflow']['model_bucket'])") && \
 	mlflow server \
 	  --backend-store-uri=sqlite:///mlflow.db \
-	  --default-artifact-root=s3://fake-news-prediction/ \
-	  --host 0.0.0.0 --port 5000 &
+	  --default-artifact-root=s3://$$bucket/
 
-run_train: start_mlflow
+
+run_train:
 	python 01_development/train.py
+
+run_unit_tests:
+	pipenv run pytest tests/
+
+run_integration_test:
+	bash -c "./integration_test/run.sh"
 
 # set up monitoring
 monitoring:
 	docker-compose up db adminer grafana -d --build
-	sleep 5
+	sleep 10
 	curl http://localhost:3000
 	curl http://localhost:8080
 	python 03_monitoring/monitoring.py
@@ -38,5 +45,5 @@ monitoring:
 setup:
 	pipenv install --dev
 	pre-commit install
-	bash -c "chmod +x integration/run.sh"
+	bash -c "chmod +x integration_test/run.sh"
 	aws configure
