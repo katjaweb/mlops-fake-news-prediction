@@ -173,7 +173,7 @@ def run_optimization(
 
 
 def evaluate_model_from_run(
-    model_bucket, experiment_id, run_id, X_val, y_val
+    run_id, X_val, y_val
 ):  # pylint: disable=invalid-name
     """Loads a model from an MLflow run and evaluates it on the validation data."""
     # model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/models'
