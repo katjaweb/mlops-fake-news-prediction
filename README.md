@@ -4,10 +4,13 @@
 
 This project addresses the growing challenge of online disinformation by providing a web-based tool to detect fake news. Built with Flask, the service uses a supervised machine learning model (LightGBM) and natural language processing techniques to classify English news articles as real or fake. It also provides a probability score to indicate prediction confidence.
 
-# Key features
-* Text preprocessing with tokenization and stopword removal
-* Feature extraction using Bag-of-Words (BoW)
-* Model trained on a labeled dataset of English news
+# Proposed solution and how this tool is working to address disinformation
+
+A web-based service is used to combat online disinformation. This tool is designed to assist information consumers, researchers, and journalists in navigating today's complex digital landscape. Utilizing natural language processing and supervised learning, it detects and differentiates between factual and false information. The goal is to enhance public awareness, helping users identify potential disinformation. By doing so, the tool empowers individuals to critically assess the credibility of the information they encounter online.
+
+The fake news detection web-service is built using Flask, a web application framework for Python, as the backend server. The server processes user input, specifically the text of a news article, and passes it through a machine-learning model to determine whether the news is real or fake. To provide transparency, the model also outputs a probability score, ensuring users understand that predictions are not always absolute.
+
+To enhance accuracy, standard natural language processing (NLP) techniques were applied to preprocess the text, including tokenization and stopword removal. Additionally, new numerical features were created and used a Bag-of-Words (BoW) vectorizer to convert textual data into a numerical format for machine learning. The fake news detection web-service was trained using a dataset of English news articles, meaning the web service is specifically designed for analyzing English-language content. While the underlying techniques could be adapted for other languages, its current implementation is optimized for detecting disinformation in English news articles. The model employed for classification is LightGBM.
 
 The goal is to support journalists, researchers, and the public in critically assessing the credibility of online information.
 
@@ -73,7 +76,7 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 
 Follow these steps to set up and run the project locally:
 
-Make sure you have docker and anaconda installed. For this project anaconda Version xy and docker xyz were used. You also need AWS CLI to run this project.
+Make sure you have docker and anaconda installed. For this project anaconda Version 24.9.2 and docker 27.5.1-1 were used. You also need AWS CLI to run this project.
 
 To install Ananconda distribution follow the instructions here:
 
@@ -83,14 +86,14 @@ The AWS CLI install and update instructions can be found here:
 
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
-Clone the repository
+To clone the repository
 
 <pre><code>git clone https://github.com/katjaweb/mlops-fake-news-prediction.git
 cd mlops-fake-news-prediction</code></pre>
 
 **Install dependencies**
 
-Make sure you have Python 3.12+ and Pipenv installed.
+Install required dependencies.
 
 ```bash
 make setup
@@ -104,23 +107,23 @@ The make setup command prepares the local development environment by installing 
 pipenv run python -m spacy download en_core_web_sm
 ```
 
-You need to create an s3 bucket to store the datasets and artifacts from experiment tracking. For that you can run the following command. Please note, that your bucket name has to be unique and that you cannot use the same name as in the projet. To create a unique bucket name, you cann add your name at the end of the following command. You can also change to the region you wish to:
+You need to create an S3 bucket to store the datasets and artifacts used for experiment tracking. To do this, you can run the following command. Please note that your bucket name must be unique and cannot be the same as the one used in the project. To ensure uniqueness, you can append your name to the bucket name in the command. You may also modify the region to one of your choice.
 
 ```bash
 aws s3api create-bucket --bucket fake-news-prediction-katja --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
 ```
 
-Then go to cofig/vars.yaml and change the [mlflow][model_bucket] name to your bucket name.
+Next open `config/vars.yaml` file and update the `[mlflow][model_bucket]` field to match the name of your S3 bucket.
 
 **Retrieve the dataset**
 
-You can download the dataset from here
+You can download the dataset from the following link.
 
 ```bash
 wget https://zenodo.org/records/4561253/files/WELFake_Dataset.csv
 ```
 
-Then upload it to your s3-bucket that was created earlier. remember to replace the bucket name with your created bucket name.
+Then upload it to the S3 bucket you created earlier. Remember to replace the bucket name with your own unique bucket name.
 
  ```bash
 aws s3 cp /workspaces/mlops-fake-news-prediction/WELFake_Dataset.csv s3://fake-news-prediction-katja/datasets/WELFake_Dataset.csv
@@ -136,20 +139,80 @@ The `run_process_data` Makefile command executes the `process_data.py` script lo
 
 **Run the training pipeline**
 
+The `make start_mlflow` command starts an MLflow tracking server with a local SQLite database as the backend and an S3 bucket as the artifact store.
+
+```bash
+make start_mlflow
+```
+
+Then open a new terminal and execute the training script (`train.py`) to train a model and log its artifacts and metrics to the MLflow server.
+
 ```bash
 make run_train
 ```
 
-The `make train` command starts an MLflow tracking server with a local SQLite database as the backend and an S3 bucket as the artifact store. The command first launches the MLflow server and then executes the training script (`train.py`) to train a model and log its artifacts and metrics to the MLflow server.
+**Run the application locally**
 
-**4. Run the application locally**
+To run the fake news prediction web service locally, start the Docker container to build and launch the service in the background.
 
 ```bash
-pipenv run python app.py
+docker-compose up fake_news_prediction -d --build
 ```
 
-**5. Run tests**
+This will build the Docker image using `02_deployment/Dockerfile`, expose port `9696`, mount your local AWS credentials to the container and start the service using `gunicorn` on port `9696`
+
+To verify the service is running, run the test script to send a sample prediction request:
+
+```bash
+python 02_deployment/test.py
+```
+
+This script sends a sample news article to the `/predict` endpoint and prints the response, including the prediction result.
+
+**Monitoring**
+
+Launch the monitoring infrastructure and run the batch monitoring pipeline locally. This command will start the PostgreSQL database, Adminer (a DB UI), and Grafana for visualizing metrics.
+
+```bash
+make monitoring
+```
+
+This will build and launch the Docker containers (db, adminer, grafana) and run the 03_monitoring/monitoring.py script to calculate and store performance & data drift metrics such as prediction drift, number of drifted features, missing values, accuracy, precision and recall.
+
+The metrics can be visualized via Grafana (running on http://localhost:3000)
+User: admin
+Password: admin
+
+TO access Adminer UI, go to http://localhost:8080. Use the following credentials:
+
+System: PostgreSQL
+Server: db
+Username: postgres
+Password: example
+Database: test
+
+This monitoring setup was created for documentation and demonstration purposes only.
+It does not run in a live production environment.
+A subset of the WelFake dataset is used to simulate model behavior over time and illustrate how data quality and prediction performance could be tracked in a real-world scenario.
+
+**Run tests**
+
+To run unit tests, simply enter the following make command
 
 ```bash
 pipenv run pytest tests/
 ```
+
+You can also run a Makefile target to run the integration test.
+
+```bash
+make run_integration_test
+```
+
+**Possible improvements and future developments**
+
+The current version of the Fake News Detection web-service utilizes a LightGBM classifier, a relatively simple machine learning algorithm. While it delivers decent accuracy, more advanced models could further improve performance. For example deep learning approaches, such as transformer-based neural networks (e.g., BERT or GPT) could be explored to enhance predictive reliability.
+ 
+Currently, the Fake News Detector is trained on a dataset of English-language news articles. To increase its versatility, it could be extended to analyze other types of text, such as social media posts or blogs. This expansion would require retraining the model on new datasets specific to these domains, but it would significantly broaden its applicability in detecting misinformation across different platforms.
+ 
+To make fact-checking more seamless, the Fake News Detection web-service could be integrated into news websites and mobile apps. This would allow users to assess the credibility of articles in real-time, helping them make more informed decisions about the content they consume and share. Such integration could be particularly useful for media organizations, journalists, and everyday readers alike.
