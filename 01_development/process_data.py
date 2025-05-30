@@ -71,9 +71,9 @@ y_test = y_test.reset_index(drop=True)
 
 logging.info('tain-, val-, test-split done')
 logging.info("Shapes after Split:")
-logging.info('train data:', X_train.shape, y_train.shape)
-logging.info('val data:', X_val.shape, y_val.shape)
-logging.info('test data:', X_test.shape, y_test.shape)
+logging.info('%s train data: %s', X_train.shape, y_train.shape)
+logging.info('%s val data: %s', X_val.shape, y_val.shape)
+logging.info('%s test data: %s', X_test.shape, y_test.shape)
 
 # clean data: drop unused column 'Unnamed: 0', reverse labels into: fake=1 and real=0, fill Nan-values with an empty string
 #
