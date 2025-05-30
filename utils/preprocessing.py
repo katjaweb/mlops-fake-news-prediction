@@ -2,7 +2,6 @@
 Functions for preprocessing to clean data, create new features and appling NLP-Steps to the text
 """
 
-# print('Do Imports preprocessing.py')
 import re
 import string
 
@@ -14,20 +13,10 @@ from textblob import TextBlob
 from langdetect import DetectorFactory, detect
 from nltk.corpus import stopwords
 
-print('Imports preprocessing.py done')
-
-print('load spacy')
 nlp = spacy.load('en_core_web_sm')
-print('spacy loaded')
-print('download stopwords')
 nltk.download('stopwords')
-print('stopwords downloaded')
-print('create variable for stopwords')
 stopwords = stopwords.words('english')
-print('variable created')
-print('save punctuations in variable')
 PUNCTUATIONS = string.punctuation
-print('punctuations saved')
 
 
 def clean_data(features, target):

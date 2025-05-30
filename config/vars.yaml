@@ -1,15 +1,15 @@
 data:
-  X_test: datasets/X_test_2025-05-05.parquet
-  X_train: datasets/X_train_2025-05-05.parquet
-  X_val: datasets/X_val_2025-05-05.parquet
+  X_test: datasets/X_test_2025-05-27.parquet
+  X_train: datasets/X_train_2025-05-27.parquet
+  X_val: datasets/X_val_2025-05-27.parquet
   Y_test: null
-  y_test: datasets/y_test_2025-05-05.csv
-  y_train: datasets/y_train_2025-05-05.csv
-  y_val: datasets/y_val_2025-05-05.csv
+  y_test: datasets/y_test_2025-05-27.csv
+  y_train: datasets/y_train_2025-05-27.csv
+  y_val: datasets/y_val_2025-05-27.csv
 mlflow:
   best_model_name: null
   experiment_id: '1'
-  experiment_name: mlflow-fake-news
-  model_bucket: fake-news-prediction
-  production_run_id: 38d5cfbb81ff40bb9cebb80eee207eee
+  experiment_name: mlflow-fn
+  model_bucket: fake-news-prediction-katja
+  production_run_id: 7aa00ecd09b24441a7c15c961dd3c335
   tracking_uri: null
