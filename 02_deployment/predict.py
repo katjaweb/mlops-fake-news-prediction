@@ -54,9 +54,13 @@ experiment_id = config['mlflow']['experiment_id']
 MODEL_LOCATION = (
     f's3://{model_bucket}/{experiment_id}/{production_run_id}/artifacts/models'
 )
+
+# logged_model = f'runs:/{production_run_id}/models'
+
 logger.info("Load model from: %s", MODEL_LOCATION)
 try:
     model = mlflow.sklearn.load_model(MODEL_LOCATION)
+    # model = mlflow.pyfunc.load_model(logged_model)
     logger.info("Model successfully loaded.")
 except Exception as e:
     logger.error("Error occured when loading the model.", exc_info=True)
