@@ -204,8 +204,6 @@ def get_current_production_info(model_name):
 def register_model_if_better(
     config,
     config_path,
-    model_bucket,
-    experiment_id,
     model_name,
     new_run_id,
     X_val,
@@ -219,14 +217,14 @@ def register_model_if_better(
 
     # Evaluate new model
     new_metric = evaluate_model_from_run(
-        model_bucket, experiment_id, new_run_id, X_val, y_val
+        new_run_id, X_val, y_val
     )
     print(f'New model (run {new_run_id}), accuracy: {new_metric:.4f}')
 
     # Evaluate current model (if available)
     if current_run_id:
         current_metric = evaluate_model_from_run(
-            model_bucket, experiment_id, current_run_id, X_val, y_val
+            current_run_id, X_val, y_val
         )
         print(
             f'Old production model (run {current_run_id}), accuracy: {current_metric:.4f}'
@@ -370,8 +368,6 @@ best_new_run_id = best_new_run.info.run_id
 register_model_if_better(
     config=config,
     config_path=config_path,
-    model_bucket=model_bucket,
-    experiment_id=experiment_id,
     model_name=MODEL_NAME,
     new_run_id=best_new_run_id,
     X_val=X_val,
