@@ -37,6 +37,10 @@ with open(config_path, "r", encoding='utf-8') as file:
 model_bucket = config['mlflow']['model_bucket']
 experiment_id = config['mlflow']['experiment_id']
 run_id = config['mlflow']['production_run_id']
+path_reference_data = config['data']['X_train']
+path_current_data = config['data']['X_val']
+path_y_reference = config['data']['y_train']
+path_y_current = config['data']['y_val']
 
 # Configuration
 logging.basicConfig(
@@ -68,16 +72,22 @@ MODEL_LOCATION = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/models
 model = mlflow.sklearn.load_model(MODEL_LOCATION)
 
 reference_data = uf.load_file_s3(
-    'fake-news-prediction', 'datasets/reference_data_2025-04-16.parquet', 'parquet'
+    model_bucket, path_reference_data, 'parquet'
 )
 raw_data = uf.load_file_s3(
-    'fake-news-prediction', 'datasets/X_val_2025-04-08.parquet', 'parquet'
+    model_bucket, path_current_data, 'parquet'
 )
 
 y_current = uf.load_file_s3(
-    'fake-news-prediction', 'datasets/y_val_2025-04-08.csv', 'csv'
+    model_bucket, path_y_current, 'csv'
 )
 y_current = y_current.loc[:, 'label']
+raw_data['actual'] = y_current
+
+y_reference = uf.load_file_s3(
+    model_bucket, path_y_reference, 'csv'
+)
+y_reference = y_reference.loc[:, 'label']
 raw_data['actual'] = y_current
 
 # Add date column to raw_data for testing
@@ -91,6 +101,15 @@ random_timestamps = pd.to_datetime(
 ).round('s')
 
 raw_data["timestamp"] = random_timestamps
+
+# days = 30  # Number of days for monitoring
+
+# For each row, create a day (in modulo) and a random time
+# raw_data["timestamp"] = [
+#     start_date + pd.Timedelta(days=i % days, seconds=random.randint(0, 86399))
+#     for i in range(num_rows)
+# ]
+
 raw_data = raw_data.sort_values("timestamp")
 
 # Time period and column assignment
@@ -150,11 +169,14 @@ def calculate_metrics_postgresql(curr, i):
     current_data = current_data.drop(columns=['timestamp'], axis=1)
 
     # Model predictions
+    reference_preds = model.predict(reference_data)
+    reference_data['prediction'] = reference_preds
+    reference_data['actual'] = y_reference
+
     current_data = current_data.copy()
     current_data.fillna('', inplace=True)
     val_preds = model.predict(current_data)
     current_data['prediction'] = val_preds
-    current_data["prediction"] = model.predict(current_data)
     current_data['actual'] = y_current
 
     # Run Evidently Report

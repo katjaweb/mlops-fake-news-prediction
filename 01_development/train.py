@@ -173,7 +173,7 @@ def run_optimization(
 
 
 def evaluate_model_from_run(
-    model_bucket, experiment_id, run_id, X_val, y_val
+    run_id, X_val, y_val
 ):  # pylint: disable=invalid-name
     """Loads a model from an MLflow run and evaluates it on the validation data."""
     # model_location = f's3://{model_bucket}/{experiment_id}/{run_id}/artifacts/models'
@@ -204,8 +204,6 @@ def get_current_production_info(model_name):
 def register_model_if_better(
     config,
     config_path,
-    model_bucket,
-    experiment_id,
     model_name,
     new_run_id,
     X_val,
@@ -219,14 +217,14 @@ def register_model_if_better(
 
     # Evaluate new model
     new_metric = evaluate_model_from_run(
-        model_bucket, experiment_id, new_run_id, X_val, y_val
+        new_run_id, X_val, y_val
     )
     print(f'New model (run {new_run_id}), accuracy: {new_metric:.4f}')
 
     # Evaluate current model (if available)
     if current_run_id:
         current_metric = evaluate_model_from_run(
-            model_bucket, experiment_id, current_run_id, X_val, y_val
+            current_run_id, X_val, y_val
         )
         print(
             f'Old production model (run {current_run_id}), accuracy: {current_metric:.4f}'
@@ -281,12 +279,17 @@ def register_model_if_better(
 # Load features and target
 
 X_train = load_file_s3(model_bucket, config['data']['X_train'], 'parquet')
-X_test = load_file_s3(model_bucket, config['data']['X_val'], 'parquet')
-X_val = load_file_s3(model_bucket, config['data']['X_test'], 'parquet')
+X_test = load_file_s3(model_bucket, config['data']['X_test'], 'parquet')
+X_val = load_file_s3(model_bucket, config['data']['X_val'], 'parquet')
 
 y_train = load_file_s3(model_bucket, config['data']['y_train'], 'csv')
 y_test = load_file_s3(model_bucket, config['data']['y_test'], 'csv')
 y_val = load_file_s3(model_bucket, config['data']['y_val'], 'csv')
+
+print("Shapes nach dem Laden:")
+print('train data:', X_train.shape, y_train.shape)
+print('val data:', X_val.shape, y_val.shape)
+print('test data:', X_test.shape, y_test.shape)
 
 y_train = y_train.loc[:, 'label']
 y_test = y_test.loc[:, 'label']
@@ -365,8 +368,6 @@ best_new_run_id = best_new_run.info.run_id
 register_model_if_better(
     config=config,
     config_path=config_path,
-    model_bucket=model_bucket,
-    experiment_id=experiment_id,
     model_name=MODEL_NAME,
     new_run_id=best_new_run_id,
     X_val=X_val,
