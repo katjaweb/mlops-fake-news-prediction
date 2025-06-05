@@ -204,7 +204,19 @@ Next run the deploy.sh script using the Makefile:
 make eb_deploy
 ```
 
-If you run the script for the first time, a new Elastic Beanstalk environment will be created. On subsequent runs, the environment will simply be updated with the latest version of the application.
+If you run the script for the first time, a new Elastic Beanstalk environment will be created. Once the deployment completes successfully, Elastic Beanstalk will provide the service's endpoint URL. Make sure to update the `test_eb.py` script with this new address. It can then be used to verify that the service is working as expected.
+
+```bash
+pipenv run python 02_deployment/test_eb.py
+```
+
+On subsequent runs, the environment will simply be updated with the latest version of the application.
+
+When the service is no longer needed, make sure to terminate the environment in order to avoid unnecessary costs.
+
+```bash
+eb terminate faker-news-service
+```
 
 **Monitoring**
 
