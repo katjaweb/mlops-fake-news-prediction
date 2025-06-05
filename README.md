@@ -82,9 +82,29 @@ To install Ananconda distribution follow the instructions here:
 
 [[https://www.anaconda.com/docs/getting-started/anaconda/install](https://www.anaconda.com/docs/getting-started/anaconda/install)]
 
+If you want to install the same distribution, download anaconda Version 24.10.1
+
+```bash
+wget https://repo.anaconda.com/archive/Anaconda3-2024.10-1-Linux-x86_64.sh
+```
+
+and execute
+
+```bash
+bash Anaconda3-2024.10-1-Linux-x86_64.sh
+```
+
 The AWS CLI install and update instructions can be found here:
 
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+or simply do
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
 
 To clone the repository
 
@@ -169,6 +189,23 @@ python 02_deployment/test.py
 
 This script sends a sample news article to the `/predict` endpoint and prints the response, including the prediction result.
 
+**Deploy the app to AWS Elasstic beanstalk**
+
+The EB CLI is listed as a development dependency in the Pipfile.
+If you're deploying the Fake News Prediction Service for the first time, first adjust the AWS region in the deploy.sh script. Then navigate to the deployment directory:
+
+```bash
+cd 02_deployment/deploy
+```
+
+Next run the deploy.sh script using the Makefile:
+
+```bash
+make eb_deploy
+```
+
+If you run the script for the first time, a new Elastic Beanstalk environment will be created. On subsequent runs, the environment will simply be updated with the latest version of the application.
+
 **Monitoring**
 
 Launch the monitoring infrastructure and run the batch monitoring pipeline locally. This command will start the PostgreSQL database, Adminer (a DB UI), and Grafana for visualizing metrics.
@@ -208,6 +245,38 @@ You can also run a Makefile target to run the integration test.
 ```bash
 make run_integration_test
 ```
+
+**Continious Integration (CI) Test**
+
+The CI pipeline automatically runs a series of tests to validate the Fake News Prediction Service whenever changes are pushed to the `develop` branch or a pull request targets develop.
+
+What the CI Pipeline Does:
+
+Checks out the repository on a clean Ubuntu environment.
+
+Sets up Python 3.12.2.
+
+Installs development dependencies using pipenv.
+
+Downloads the required SpaCy language model (en_core_web_sm).
+
+Runs unit tests using pytest.
+
+Runs code linting with pylint to check for style and code quality issues.
+
+Configures AWS credentials using secrets stored in GitHub Actions.
+
+Starts the model server locally using gunicorn.
+
+Runs integration tests located in the integration_test directory.
+
+When the CI Pipeline Runs:
+
+On every push to the develop branch.
+
+On every pull request targeting the develop branch.
+
+This ensures that all core functionality is tested and validated before merging into the main development line.
 
 **Possible improvements and future developments**
 
