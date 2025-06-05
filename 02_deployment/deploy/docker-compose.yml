@@ -1,0 +1,21 @@
+version: "3.9"
+
+networks:
+  front-tier:
+  back-tier:
+
+services:
+  fake_news_prediction:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fake-news-prediction-service:v1
+    ports:
+      - "80:9696"
+    volumes:
+      - ~/.aws:/root/.aws:ro
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-1
+      - MLFLOW_TRACKING_URI=https://fictional-adventure-wr9prgq477xwfgggp.github.dev/:5000
+    restart: always
+    entrypoint: ["gunicorn", "--bind=0.0.0.0:9696", "predict:app"]
