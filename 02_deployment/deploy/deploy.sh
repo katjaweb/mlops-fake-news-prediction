@@ -35,12 +35,12 @@ else
 fi
 
 echo "Clean up deploy directory"
-find "$DEPLOY_DIR" -mindepth 1 \
-  ! -name 'Dockerfile' \
-  ! -name 'docker-compose.yml' \
-  ! -name 'deploy.sh' \
-  ! -name '.elasticbeanstalk' \
-  ! -name '.gitignore' \
-  -exec rm -rf {} +
+rm Pipfile
+rm Pipfile.lock
+rm predict.py
+rm utils/preprocessing.py
+rm config/vars.yaml
+rmdir utils 2>/dev/null || true
+rmdir config 2>/dev/null || true
 
 echo "deployment completed."
