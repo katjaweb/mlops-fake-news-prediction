@@ -43,7 +43,8 @@ monitoring:
 	python 03_monitoring/monitoring.py
 
 setup:
+	pip install pipenv
 	pipenv install --dev
-	pre-commit install
 	bash -c "chmod +x integration_test/run.sh"
+	bash -c "chmod +x 02_deployment/deploy/run.sh"
 	aws configure
