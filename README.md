@@ -264,33 +264,24 @@ The CI pipeline automatically runs a series of tests to validate the Fake News P
 
 What the CI Pipeline Does:
 
-Checks out the repository on a clean Ubuntu environment.
-
-Sets up Python 3.12.2.
-
-Installs development dependencies using pipenv.
-
-Downloads the required SpaCy language model (en_core_web_sm).
-
-Runs unit tests using pytest.
-
-Runs code linting with pylint to check for style and code quality issues.
-
-Configures AWS credentials using secrets stored in GitHub Actions.
-
-Starts the model server locally using gunicorn.
-
-Runs integration tests located in the integration_test directory.
+- Checks out the repository on a clean Ubuntu environment.
+- Sets up Python 3.12.2.
+- Installs development dependencies using pipenv.
+- Downloads the required SpaCy language model (en_core_web_sm).
+- Runs unit tests using pytest.
+- Runs code linting with pylint to check for style and code quality issues.
+- Configures AWS credentials using secrets stored in GitHub Actions.
+- Starts the model server locally using gunicorn.
+- Runs integration tests located in the integration_test directory.
 
 When the CI Pipeline Runs:
 
-On every push to the develop branch.
-
-On every pull request targeting the develop branch.
+- On every push to the develop branch.
+- On every pull request targeting the develop branch.
 
 This ensures that all core functionality is tested and validated before merging into the main development line.
 
-**Possible improvements and future developments**
+# Possible improvements and future developments
 
 The current version of the Fake News Detection web-service utilizes a LightGBM classifier, a relatively simple machine learning algorithm. While it delivers decent accuracy, more advanced models could further improve performance. For example deep learning approaches, such as transformer-based neural networks (e.g., BERT or GPT) could be explored to enhance predictive reliability.
  
