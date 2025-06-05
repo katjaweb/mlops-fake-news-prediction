@@ -34,6 +34,9 @@ run_unit_tests:
 run_integration_test:
 	bash -c "./integration_test/run.sh"
 
+eb_deploy:
+	bash -c "./02_deployment/deploy/deploy.sh"
+
 # set up monitoring
 monitoring:
 	docker-compose up db adminer grafana -d --build
@@ -46,5 +49,5 @@ setup:
 	pip install pipenv
 	pipenv install --dev
 	bash -c "chmod +x integration_test/run.sh"
-	bash -c "chmod +x 02_deployment/deploy/run.sh"
+	bash -c "chmod +x 02_deployment/deploy/deploy.sh"
 	aws configure
