@@ -171,6 +171,8 @@ Then open a new terminal and execute the training script (`train.py`) to train a
 make run_train
 ```
 
+![MLflow](./images/MLflow.png)
+
 **Run the application locally**
 
 To run the fake news prediction web service locally, start the Docker container to build and launch the service in the background.
