@@ -8,7 +8,7 @@ This project addresses the growing challenge of online disinformation by providi
 
 A web-based service is used to combat online disinformation. This tool is designed to assist information consumers, researchers, and journalists in navigating today's complex digital landscape. Utilizing natural language processing and supervised learning, it detects and differentiates between factual and false information. The goal is to enhance public awareness, helping users identify potential disinformation. By doing so, the tool empowers individuals to critically assess the credibility of the information they encounter online.
 
-The fake news detection web-service is built using Flask, a web application framework for Python, as the backend server. The server processes user input, specifically the text of a news article, and passes it through a machine-learning model to determine whether the news is real or fake. To provide transparency, the model also outputs a probability score, ensuring users understand that predictions are not always absolute.
+The fake news detection web-service is built using Flask, a web application framework for Python, as the backend server. The server processes user input, specifically the text of a news article, and passes it through a machine-learning model to determine whether the news is real or fake. To provide transparency, the model also outputs a probability score, ensuring users understand that predictions are not always absolute. The service is deployed using AWS Elastic Beanstalk, which manages the infrastructure, scaling, and deployment of the application.
 
 To enhance accuracy, standard natural language processing (NLP) techniques were applied to preprocess the text, including tokenization and stopword removal. Additionally, new numerical features were created and used a Bag-of-Words (BoW) vectorizer to convert textual data into a numerical format for machine learning. The fake news detection web-service was trained using a dataset of English news articles, meaning the web service is specifically designed for analyzing English-language content. While the underlying techniques could be adapted for other languages, its current implementation is optimized for detecting disinformation in English news articles. The model employed for classification is LightGBM.
 
@@ -266,33 +266,24 @@ The CI pipeline automatically runs a series of tests to validate the Fake News P
 
 What the CI Pipeline Does:
 
-Checks out the repository on a clean Ubuntu environment.
-
-Sets up Python 3.12.2.
-
-Installs development dependencies using pipenv.
-
-Downloads the required SpaCy language model (en_core_web_sm).
-
-Runs unit tests using pytest.
-
-Runs code linting with pylint to check for style and code quality issues.
-
-Configures AWS credentials using secrets stored in GitHub Actions.
-
-Starts the model server locally using gunicorn.
-
-Runs integration tests located in the integration_test directory.
+- Checks out the repository on a clean Ubuntu environment.
+- Sets up Python 3.12.2.
+- Installs development dependencies using pipenv.
+- Downloads the required SpaCy language model (en_core_web_sm).
+- Runs unit tests using pytest.
+- Runs code linting with pylint to check for style and code quality issues.
+- Configures AWS credentials using secrets stored in GitHub Actions.
+- Starts the model server locally using gunicorn.
+- Runs integration tests located in the integration_test directory.
 
 When the CI Pipeline Runs:
 
-On every push to the develop branch.
-
-On every pull request targeting the develop branch.
+- On every push to the develop branch.
+- On every pull request targeting the develop branch.
 
 This ensures that all core functionality is tested and validated before merging into the main development line.
 
-**Possible improvements and future developments**
+# Possible improvements and future developments
 
 The current version of the Fake News Detection web-service utilizes a LightGBM classifier, a relatively simple machine learning algorithm. While it delivers decent accuracy, more advanced models could further improve performance. For example deep learning approaches, such as transformer-based neural networks (e.g., BERT or GPT) could be explored to enhance predictive reliability.
  
