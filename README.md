@@ -39,6 +39,8 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 
 # System architecture
 
+![scheme](./images/scheme.png)
+
 **Text processing and feature pipeline**: A data pipeline that loads raw news data, cleans and enriches it by generating numerical and textual features, and prepares it for model training. It combines and analyzes text fields, extracts linguistic and statistical features, performs NLP-based text cleaning (lemmatization, tokenization, stopword and punctuation removal), and outputs a cleaned title_text_clean column. The processed dataset is then uploaded to an S3 bucket.
 
 **Training pipeline:** This pipeline handles both initial training and retraining of classification models using preprocessed features from S3. It performs hyperparameter tuning with hyperopt, supports models like RandomForest, XGBoost, LinearSVC, and LightGBM, and uses a Bag-of-Words pipeline for text vectorization. This pipeline ensures reproducible, performance-driven model selection and versioning.
@@ -76,7 +78,12 @@ IEEE Transactions on Computational Social Systems: pp. 1-13 (doi: 10.1109/TCSS.2
 
 Follow these steps to set up and run the project locally:
 
-Make sure you have docker and anaconda installed. For this project anaconda Version 24.9.2 and docker 27.5.1-1 were used. You also need AWS CLI to run this project.
+Clone the repository
+
+<pre><code>git clone https://github.com/katjaweb/mlops-fake-news-prediction.git
+cd mlops-fake-news-prediction</code></pre>
+
+Make sure you have docker and anaconda installed. For this project anaconda Version 24.10.1 and docker 27.5.1-1 were used. You also need AWS CLI to run this project.
 
 To install Ananconda distribution follow the instructions here:
 
@@ -97,19 +104,6 @@ bash Anaconda3-2024.10-1-Linux-x86_64.sh
 The AWS CLI install and update instructions can be found here:
 
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-
-or simply do
-
-```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-```
-
-To clone the repository
-
-<pre><code>git clone https://github.com/katjaweb/mlops-fake-news-prediction.git
-cd mlops-fake-news-prediction</code></pre>
 
 **Install dependencies**
 
@@ -217,7 +211,7 @@ On subsequent runs, the environment will simply be updated with the latest versi
 When the service is no longer needed, make sure to terminate the environment in order to avoid unnecessary costs.
 
 ```bash
-eb terminate faker-news-service
+eb terminate fake-news-service
 ```
 
 **Monitoring**
