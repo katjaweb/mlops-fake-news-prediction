@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake News Detection Web-service</title>
+    <style>
+        body { font-family: sans-serif; padding: 40px; background-color: #f4f4f4; }
+        .container {
+            max-width: 600px; margin: auto; padding: 20px;
+            background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1, p { text-align: center; }
+        label { font-weight: bold; }
+        textarea, input[type=text] {
+            width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc;
+        }
+        button {
+            width: 100%; padding: 10px; background-color: #007BFF;
+            color: white; border: none; border-radius: 6px; font-size: 16px;
+        }
+        .result, .error { padding: 15px; margin-top: 20px; border-radius: 6px; }
+        .result { background-color: #e6f7ff; }
+        .error { background-color: #ffe6e6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fake News Detection Web-service</h1>
+        <p>Developed for real-time detection of online disinformation by classifying English-language news as true or false.</p>
+
+        <form method="post">
+            <label for="title">News Title:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="text">News Content:</label>
+            <textarea id="text" name="text" rows="6" required></textarea>
+
+            <button type="submit">Analyze</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+            <strong>Prediction:</strong> {{ prediction }}<br>
+            <strong>Probability (Fake):</strong> {{ probability_fake }}<br>
+            <strong>Probability (Real):</strong> {{ probability_real }}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
