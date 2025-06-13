@@ -1,3 +1,8 @@
+"""
+Simple user interface built with Flask,
+running on a development server.
+"""
+
 from flask import Flask, render_template, request
 import requests
 
@@ -5,6 +10,18 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    """
+    Renders the main user interface for the Fake News Detection Web Service.
+
+    Handles both GET and POST requests:
+    - On GET: displays the input form.
+    - On POST: receives the title and text of a news article, sends a request to the
+      prediction API endpoint, and displays the predicted label along with the associated
+      probabilities.
+
+    Returns:
+        Rendered HTML template with prediction results or an error message.
+    """
     prediction = None
     probability_fake = None
     probability_real = None
@@ -21,7 +38,7 @@ def index():
         }
 
         try:
-            res = requests.post("http://localhost:9696/predict", json=payload)
+            res = requests.post("http://localhost:9696/predict", json=payload, timeout=10)
             if res.status_code == 200:
                 result = res.json()
                 prediction = result["label"]
