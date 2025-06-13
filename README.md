@@ -8,9 +8,9 @@ This project addresses the growing challenge of online disinformation by providi
 
 A web-based service is used to combat online disinformation. This tool is designed to assist information consumers, researchers, and journalists in navigating today's complex digital landscape. Utilizing natural language processing and supervised learning, it detects and differentiates between factual and false information. The goal is to enhance public awareness, helping users identify potential disinformation. By doing so, the tool empowers individuals to critically assess the credibility of the information they encounter online.
 
-The fake news detection web-service is built using Flask, a web application framework for Python, as the backend server. The server processes user input, specifically the text of a news article, and passes it through a machine-learning model to determine whether the news is real or fake. To provide transparency, the model also outputs a probability score, ensuring users understand that predictions are not always absolute. The service is deployed using AWS Elastic Beanstalk, which manages the infrastructure, scaling, and deployment of the application.
+The fake news detection web-service is built using Flask, a web application framework for Python, as the backend server. The server processes user input, specifically the text of a news article, and passes it through a machine-learning model to determine whether the news is real or fake. To provide transparency, the model also outputs a probability score, ensuring users understand that predictions are not always absolute. The service is deployed using AWS Elastic Beanstalk, which manages the infrastructure, scaling, and deployment of the application. The web service can also be tested using a user interface built with Flask, running on a development server.
 
-To enhance accuracy, standard natural language processing (NLP) techniques were applied to preprocess the text, including tokenization and stopword removal. Additionally, new numerical features were created and used a Bag-of-Words (BoW) vectorizer to convert textual data into a numerical format for machine learning. The fake news detection web-service was trained using a dataset of English news articles, meaning the web service is specifically designed for analyzing English-language content. While the underlying techniques could be adapted for other languages, its current implementation is optimized for detecting disinformation in English news articles. The model employed for classification is LightGBM.
+To enhance accuracy, standard natural language processing (NLP) techniques were applied to preprocess the text, including tokenization and stopword removal. Additionally, new numerical features were created and used a Bag-of-Words (BoW) vectorizer to convert textual data into a numerical format for machine learning. The fake news detection web-service was trained using a dataset of English news articles, meaning the web service is specifically designed for analyzing English-language content. While the underlying techniques could be adapted for other languages, its current implementation is optimized for detecting disinformation in English news articles. The model employed for classification is LightGBM. The model employed for classification is LightGBM. Even if it is a lightweight model, it still achieves a decent precision and recall score of 98% in detecting fake news.
 
 The goal is to support journalists, researchers, and the public in critically assessing the credibility of online information.
 
@@ -213,6 +213,26 @@ When the service is no longer needed, make sure to terminate the environment in 
 ```bash
 eb terminate fake-news-service
 ```
+
+The web service can also be tested using a simple user interface built with Flask, running on a development server. This setup allows for quick and interactive testing of the fake news detection functionality.
+
+To start the UI, run the following bash command from the root directory:
+
+```bash
+pipenv run python 02_deployment/app_ui.py
+```
+
+This will launch the Flask development server on `http://localhost:5000`.
+
+![app_ui](./images/app_ui.png)
+
+In `app_ui.py`, make sure to set the correct URL for the prediction API.
+
+```bash
+url = "http://localhost:9696/predict"
+```
+
+If the backend is deployed to AWS Elastic Beanstalk, replace it with your actual EB URL.
 
 **Monitoring**
 
