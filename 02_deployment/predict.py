@@ -13,16 +13,14 @@ import pandas as pd
 from flask import Flask, jsonify, request
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)  # Oder INFO für weniger Spam
+logger.setLevel(logging.INFO)
 
-# StreamHandler für stdout – das versteht Docker/GitHub Actions/Gunicorn
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter(
     "[%(asctime)s] [%(levelname)s] - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
 )
 handler.setFormatter(formatter)
 
-# Falls Handler doppelt, vorher leeren
 if not logger.handlers:
     logger.addHandler(handler)
 
