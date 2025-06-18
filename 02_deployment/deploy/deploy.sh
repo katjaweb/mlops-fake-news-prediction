@@ -19,13 +19,13 @@ cp "$PROJECT_ROOT/config/vars.yaml" "$DEPLOY_DIR/config/"
 
 echo "All files copied to $DEPLOY_DIR"
 
-# EB initialisieren (nur beim ersten Mal notwendig)
+# Initialize EB (only required the first time)
 if [ ! -d ".elasticbeanstalk" ]; then
   echo "Initialize Elastic Beanstalk Environment"
   eb init -p docker -r "$REGION" "$APP_NAME"
 fi
 
-# Umgebung erstellen oder updaten
+# Create or update environment
 if eb status "$ENV_NAME" > /dev/null 2>&1; then
   echo "Deploy new version to existing environment"
   eb deploy "$ENV_NAME"
