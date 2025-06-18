@@ -194,10 +194,10 @@ If you're deploying the Fake News Prediction Service for the first time, first a
 cd 02_deployment/deploy
 ```
 
-Next run the deploy.sh script using the Makefile:
+Next run the following command in your terminal:
 
 ```bash
-make eb_deploy
+./deploy.sh
 ```
 
 If you run the script for the first time, a new Elastic Beanstalk environment will be created. Once the deployment completes successfully, Elastic Beanstalk will provide the service's endpoint URL. Make sure to update the `test_eb.py` script with this new address. It can then be used to verify that the service is working as expected.
@@ -242,11 +242,13 @@ Launch the monitoring infrastructure and run the batch monitoring pipeline local
 make monitoring
 ```
 
-This will build and launch the Docker containers (db, adminer, grafana) and run the 03_monitoring/monitoring.py script to calculate and store performance & data drift metrics such as prediction drift, number of drifted features, missing values, accuracy, precision and recall.
+This will build and launch the Docker containers (db, adminer, grafana) and run the 03_monitoring/monitoring.py script to calculate and store performance & data drift metrics such as prediction drift, number of drifted features or share of missing values.
 
 The metrics can be visualized via Grafana (running on http://localhost:3000)
 User: admin
 Password: admin
+
+![Grafana_Dashboard](./images/Grafana_Dashboard.png)
 
 TO access Adminer UI, go to http://localhost:8080. Use the following credentials:
 

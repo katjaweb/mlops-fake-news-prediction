@@ -38,14 +38,14 @@ def index():
         }
 
         try:
-            res = requests.post("http://localhost:9696/predict", json=payload, timeout=10)
+            res = requests.post("http://fake-news-env.eba-cryzmisk.eu-west-1.elasticbeanstalk.com/predict", json=payload, timeout=10)
             if res.status_code == 200:
                 result = res.json()
                 prediction = result["label"]
                 probability_fake = result["probability being fake"]
                 probability_real = result["probability being real"]
             else:
-                error = res.json().get("error", "Fehlerhafte Anfrage.")
+                error = res.json().get("error", "Incorrect request.")
         except Exception as e:
             error = str(e)
 
@@ -57,4 +57,4 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(port=5001, debug=True)

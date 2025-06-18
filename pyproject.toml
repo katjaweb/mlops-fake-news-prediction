@@ -7,6 +7,8 @@ disable = [
     "too-many-arguments",
     "too-many-positional-arguments",
     "too-many-locals",
+    "too-many-statements",
+    "invalid-name",
     "wrong-import-position"
 ]
 

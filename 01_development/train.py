@@ -157,7 +157,9 @@ def run_optimization(
             mlflow.log_metric('recall', test_recall)
             mlflow.log_metric('f1', test_f1)
 
-            mlflow.sklearn.log_model(sk_model=pipeline, artifact_path='models')
+            input_example = X_train.iloc[[0]]
+
+            mlflow.sklearn.log_model(sk_model=pipeline, artifact_path='models', input_example=input_example)
 
         return {'loss': test_accuracy, 'status': STATUS_OK}
 
@@ -286,7 +288,7 @@ y_train = load_file_s3(model_bucket, config['data']['y_train'], 'csv')
 y_test = load_file_s3(model_bucket, config['data']['y_test'], 'csv')
 y_val = load_file_s3(model_bucket, config['data']['y_val'], 'csv')
 
-print("Shapes nach dem Laden:")
+print("Shapes after loading:")
 print('train data:', X_train.shape, y_train.shape)
 print('val data:', X_val.shape, y_val.shape)
 print('test data:', X_test.shape, y_test.shape)
@@ -298,31 +300,31 @@ y_val = y_val.loc[:, 'label']
 
 # Experiment Tracking with MLflow
 
-# model_names = ['RandomForest', 'XGBoost', 'LinearSVC', 'LightGBM']
-model_names = ['LightGBM']
+model_names = ['RandomForest', 'XGBoost', 'LinearSVC', 'LightGBM']
+# model_names = ['LightGBM']
 
 search_spaces = {
-    # 'RandomForest': {
-    #     'max_depth': scope.int(hp.quniform('max_depth', 50, 100, 1)),
-    #     'n_estimators': scope.int(hp.quniform('n_estimators', 150, 250, 1)),
-    #     'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 20, 1)),
-    #     'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 4, 1)),
-    #     'random_state': 42
-    # },
-    # 'XGBoost': {
-    #     'max_depth': scope.int(hp.quniform("max_depth", 3, 12, 1)),
-    #     'n_estimators': scope.int(hp.quniform('n_estimators', 50, 150, 1)),
-    #     'learning_rate': hp.loguniform("learning_rate", np.log(0.01), np.log(0.3)),
-    #     'reg_alpha' : hp.quniform('reg_alpha', 40,180,1),
-    #     'reg_lambda' : hp.uniform('reg_lambda', 0,1),
-    #     'seed': 0
-    # },
-    # 'LinearSVC': {
-    #     'C': hp.uniform('C', 0, 10),
-    #     "class_weight": hp.choice("class_weight", [None, "balanced"]),
-    #     "loss": hp.choice("loss", ["hinge", "squared_hinge"]),
-    #     "max_iter": scope.int(hp.quniform("max_iter", 3000, 5000, 100))
-    # },
+    'RandomForest': {
+        'max_depth': scope.int(hp.quniform('max_depth', 50, 100, 1)),
+        'n_estimators': scope.int(hp.quniform('n_estimators', 150, 250, 1)),
+        'min_samples_split': scope.int(hp.quniform('min_samples_split', 2, 20, 1)),
+        'min_samples_leaf': scope.int(hp.quniform('min_samples_leaf', 1, 4, 1)),
+        'random_state': 42
+    },
+    'XGBoost': {
+        'max_depth': scope.int(hp.quniform("max_depth", 3, 12, 1)),
+        'n_estimators': scope.int(hp.quniform('n_estimators', 50, 150, 1)),
+        'learning_rate': hp.loguniform("learning_rate", np.log(0.01), np.log(0.3)),
+        'reg_alpha' : hp.quniform('reg_alpha', 40,180,1),
+        'reg_lambda' : hp.uniform('reg_lambda', 0,1),
+        'seed': 0
+    },
+    'LinearSVC': {
+        'C': hp.uniform('C', 0, 10),
+        "class_weight": hp.choice("class_weight", [None, "balanced"]),
+        "loss": hp.choice("loss", ["hinge", "squared_hinge"]),
+        "max_iter": scope.int(hp.quniform("max_iter", 3000, 5000, 100))
+    },
     'LightGBM': {
         'max_depth': scope.int(hp.quniform('max_depth', 4, 15, 1)),
         'learning_rate': hp.loguniform('learning_rate', -1, -0.5),

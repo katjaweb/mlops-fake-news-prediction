@@ -8,6 +8,7 @@ import time
 import random
 import logging
 import datetime
+import warnings
 
 import yaml
 import numpy as np
@@ -24,6 +25,8 @@ from evidently.metrics import (
     DatasetMissingValuesMetric,
 )
 from evidently.metric_preset import ClassificationPreset
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 here = os.path.dirname(__file__)
 sys.path.append(os.path.join(here, '..'))
@@ -74,6 +77,14 @@ model = mlflow.sklearn.load_model(MODEL_LOCATION)
 reference_data = uf.load_file_s3(
     model_bucket, path_reference_data, 'parquet'
 )
+
+y_reference = uf.load_file_s3(
+    model_bucket, path_y_reference, 'csv'
+)
+
+y_reference = y_reference.loc[:, 'label']
+reference_data['actual'] = y_reference
+
 raw_data = uf.load_file_s3(
     model_bucket, path_current_data, 'parquet'
 )
@@ -81,14 +92,11 @@ raw_data = uf.load_file_s3(
 y_current = uf.load_file_s3(
     model_bucket, path_y_current, 'csv'
 )
+
 y_current = y_current.loc[:, 'label']
 raw_data['actual'] = y_current
 
-y_reference = uf.load_file_s3(
-    model_bucket, path_y_reference, 'csv'
-)
-y_reference = y_reference.loc[:, 'label']
-raw_data['actual'] = y_current
+
 
 # Add date column to raw_data for testing
 num_rows = len(raw_data)
@@ -164,20 +172,14 @@ def calculate_metrics_postgresql(curr, i):
     current_data = raw_data[
         (raw_data.timestamp >= (begin + datetime.timedelta(i)))
         & (raw_data.timestamp < (begin + datetime.timedelta(i + 1)))
-    ]
+    ].copy()
 
-    current_data = current_data.drop(columns=['timestamp'], axis=1)
+    # Prediction
+    X_current = current_data.drop(columns=['timestamp', 'actual'])
+    current_data['prediction'] = model.predict(X_current)
 
-    # Model predictions
-    reference_preds = model.predict(reference_data)
-    reference_data['prediction'] = reference_preds
-    reference_data['actual'] = y_reference
-
-    current_data = current_data.copy()
-    current_data.fillna('', inplace=True)
-    val_preds = model.predict(current_data)
-    current_data['prediction'] = val_preds
-    current_data['actual'] = y_current
+    X_reference = reference_data.drop(columns=['actual'])
+    reference_data['prediction'] = model.predict(X_reference)
 
     # Run Evidently Report
     report.run(
