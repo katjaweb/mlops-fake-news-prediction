@@ -1,4 +1,4 @@
-# Fake News Detection Web-service
+# Fake News Detection Web-service - MLOps End-to-End-Project
 
 ![news](./images/newspaper-973049_640.jpg)
 
@@ -13,6 +13,14 @@ The fake news detection web-service is built using Flask, a web application fram
 To enhance accuracy, standard natural language processing (NLP) techniques were applied to preprocess the text, including tokenization and stopword removal. Additionally, new numerical features were created and used a Bag-of-Words (BoW) vectorizer to convert textual data into a numerical format for machine learning. The fake news detection web-service was trained using a dataset of English news articles, meaning the web service is specifically designed for analyzing English-language content. While the underlying techniques could be adapted for other languages, its current implementation is optimized for detecting disinformation in English news articles. The model employed for classification is LightGBM. Even if it is a lightweight model, it still achieves a decent precision and recall score of 98% in detecting fake news.
 
 The goal is to support journalists, researchers, and the public in critically assessing the credibility of online information.
+
+# Video presentation
+
+You can find a brief presentation of the project in the video below.
+
+<a href="https://vimeo.com/1094975444/138631dd42?share=copy" target="_blank">
+  <img src="https://img.shields.io/badge/Watch-Video-blue?logo=vimeo&style=for-the-badge" alt="Watch Video">
+</a>
 
 # About the Dataset
 
@@ -211,7 +219,7 @@ On subsequent runs, the environment will simply be updated with the latest versi
 When the service is no longer needed, make sure to terminate the environment in order to avoid unnecessary costs.
 
 ```bash
-eb terminate fake-news-service
+eb terminate fake-news-env
 ```
 
 The web service can also be tested using a simple user interface built with Flask, running on a development server. This setup allows for quick and interactive testing of the fake news detection functionality.
